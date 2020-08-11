@@ -1,0 +1,303 @@
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:16:16: object inject is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.inject.Injector[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:17:16: object util is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.util.removeZeroWidth[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:18:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.experimental.{annotate, ChiselAnnotation}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:19:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:20:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl.ir._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:21:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl.passes.{PassException, ToWorkingIR}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:22:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl.passes.wiring.SinkAnnotation[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:23:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl.annotations.{Annotation, ComponentName, ModuleName, CircuitName}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:24:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl.annotations.AnnotationUtils._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:27:63: not found: type PassException[0m
+[0m[[0m[31merror[0m] [0m[0mcase class FaultInstrumentationException(msg: String) extends PassException(msg)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:27:77: no arguments allowed for nullary constructor Object: ()Object[0m
+[0m[[0m[31merror[0m] [0m[0mcase class FaultInstrumentationException(msg: String) extends PassException(msg)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:29:43: not found: type ComponentName[0m
+[0m[[0m[31merror[0m] [0m[0mcase class FaultInstrumentationInfo(orig: ComponentName, conn: ComponentName, repl: ComponentName)[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:29:64: not found: type ComponentName[0m
+[0m[[0m[31merror[0m] [0m[0mcase class FaultInstrumentationInfo(orig: ComponentName, conn: ComponentName, repl: ComponentName)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:29:85: not found: type ComponentName[0m
+[0m[[0m[31merror[0m] [0m[0mcase class FaultInstrumentationInfo(orig: ComponentName, conn: ComponentName, repl: ComponentName)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:32:16: not found: type Statement[0m
+[0m[[0m[31merror[0m] [0m[0m  defines: Seq[Statement] = Seq.empty,[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:33:17: not found: type Statement[0m
+[0m[[0m[31merror[0m] [0m[0m  connects: Seq[Statement] = Seq.empty,[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:34:16: not found: type DefModule[0m
+[0m[[0m[31merror[0m] [0m[0m  modules: Seq[DefModule] = Seq.empty,[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:35:20: not found: type Annotation[0m
+[0m[[0m[31merror[0m] [0m[0m  annotations: Seq[Annotation] = Seq.empty,[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:67:110: not found: type Transform[0m
+[0m[[0m[31merror[0m] [0m[0mclass FaultInstrumentation(compMap: Map[String, Seq[(ComponentName, String, Class[_ <: Injector])]]) extends Transform {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:67:54: not found: type ComponentName[0m
+[0m[[0m[31merror[0m] [0m[0mclass FaultInstrumentation(compMap: Map[String, Seq[(ComponentName, String, Class[_ <: Injector])]]) extends Transform {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:67:88: not found: type Injector[0m
+[0m[[0m[31merror[0m] [0m[0mclass FaultInstrumentation(compMap: Map[String, Seq[(ComponentName, String, Class[_ <: Injector])]]) extends Transform {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:68:18: not found: type CircuitForm[0m
+[0m[[0m[31merror[0m] [0m[0m  def inputForm: CircuitForm = MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:68:32: not found: value MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m  def inputForm: CircuitForm = MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:69:19: not found: type CircuitForm[0m
+[0m[[0m[31merror[0m] [0m[0m  def outputForm: CircuitForm = MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:69:33: not found: value MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m  def outputForm: CircuitForm = MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:70:37: not found: type CircuitState[0m
+[0m[[0m[31merror[0m] [0m[0m  def execute(state: CircuitState): CircuitState = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:70:22: not found: type CircuitState[0m
+[0m[[0m[31merror[0m] [0m[0m  def execute(state: CircuitState): CircuitState = {[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:112:26: not found: type Circuit[0m
+[0m[[0m[31merror[0m] [0m[0m  private def analyze(c: Circuit): Map[String, Modifications] = {[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:74:22: not found: type DefModule[0m
+[0m[[0m[31merror[0m] [0m[0m      .foldLeft((Seq[DefModule](), Seq[Annotation]())){[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:74:40: not found: type Annotation[0m
+[0m[[0m[31merror[0m] [0m[0m      .foldLeft((Seq[DefModule](), Seq[Annotation]())){[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:75:62: value ++ is not a member of Any[0m
+[0m[[0m[31merror[0m] [0m[0m        case ((m, a), (_, Modifications(_,_,mm,aa,_))) => (m ++ mm, a ++ aa) }[0m
+[0m[[0m[31merror[0m] [0m[0m                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:75:71: value ++ is not a member of Any[0m
+[0m[[0m[31merror[0m] [0m[0m        case ((m, a), (_, Modifications(_,_,mm,aa,_))) => (m ++ mm, a ++ aa) }[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:78:14: not found: value ToWorkingIR[0m
+[0m[[0m[31merror[0m] [0m[0m    val cx = ToWorkingIR.run(state.circuit.copy(modules = mxx ++ mx))[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:80:21: not found: type Annotation[0m
+[0m[[0m[31merror[0m] [0m[0m    val inAnno: Seq[Annotation] = state.annotations.toSeq[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:85:87: not found: type CircuitState[0m
+[0m[[0m[31merror[0m] [0m[0m  private def inlineCompile(gen: () => chisel3.Module, ns: Option[Namespace] = None): CircuitState = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:85:40: not found: value chisel3[0m
+[0m[[0m[31merror[0m] [0m[0m  private def inlineCompile(gen: () => chisel3.Module, ns: Option[Namespace] = None): CircuitState = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:85:67: not found: type Namespace[0m
+[0m[[0m[31merror[0m] [0m[0m  private def inlineCompile(gen: () => chisel3.Module, ns: Option[Namespace] = None): CircuitState = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:86:41: not found: type Namespace[0m
+[0m[[0m[31merror[0m] [0m[0m    def genName(name: String, n: Option[Namespace] = None): String = n.map(_.newName(name)).getOrElse(name)[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:88:23: not found: type ExecutionOptionsManager[0m
+[0m[[0m[31merror[0m] [0m[0m    val options = new ExecutionOptionsManager("Fault Instrumentation Inline") with HasFirrtlOptions[0m
+[0m[[0m[31merror[0m] [0m[0m                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:88:84: not found: type HasFirrtlOptions[0m
+[0m[[0m[31merror[0m] [0m[0m    val options = new ExecutionOptionsManager("Fault Instrumentation Inline") with HasFirrtlOptions[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:89:14: not found: value chisel3[0m
+[0m[[0m[31merror[0m] [0m[0m        with chisel3.HasChiselExecutionOptions {[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:90:7: not found: value chiselOptions[0m
+[0m[[0m[31merror[0m] [0m[0m      chiselOptions = new chisel3.ChiselExecutionOptions(runFirrtlCompiler = false )[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:92:58: not found: value chisel3[0m
+[0m[[0m[31merror[0m] [0m[0m    val (chirrtl: Circuit, inlineAnnos: AnnotationSeq) = chisel3.Driver.execute(options, gen) match {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:93:12: not found: value chisel3[0m
+[0m[[0m[31merror[0m] [0m[0m      case chisel3.ChiselExecutionSuccess(Some(chisel3.internal.firrtl.Circuit(_,_,annos)),ast,_) =>[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:93:48: not found: value chisel3[0m
+[0m[[0m[31merror[0m] [0m[0m      case chisel3.ChiselExecutionSuccess(Some(chisel3.internal.firrtl.Circuit(_,_,annos)),ast,_) =>[0m
+[0m[[0m[31merror[0m] [0m[0m                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:94:10: not found: value Parser[0m
+[0m[[0m[31merror[0m] [0m[0m        (Parser.parse(ast), AnnotationSeq(annos.map(_.toFirrtl)))[0m
+[0m[[0m[31merror[0m] [0m[0m         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:94:29: not found: value AnnotationSeq[0m
+[0m[[0m[31merror[0m] [0m[0m        (Parser.parse(ast), AnnotationSeq(annos.map(_.toFirrtl)))[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:95:12: not found: value chisel3[0m
+[0m[[0m[31merror[0m] [0m[0m      case chisel3.ChiselExecutionFailure(m) =>[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:96:15: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : chiffre.passes.FaultInstrumentationException[0m
+[0m[[0m[31merror[0m] [0m[0m required: Throwable[0m
+[0m[[0m[31merror[0m] [0m[0m        throw new FaultInstrumentationException(s"Chisel inline compilation failed with '$m'")[0m
+[0m[[0m[31merror[0m] [0m[0m              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:92:19: not found: type Circuit[0m
+[0m[[0m[31merror[0m] [0m[0m    val (chirrtl: Circuit, inlineAnnos: AnnotationSeq) = chisel3.Driver.execute(options, gen) match {[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:92:41: not found: type AnnotationSeq[0m
+[0m[[0m[31merror[0m] [0m[0m    val (chirrtl: Circuit, inlineAnnos: AnnotationSeq) = chisel3.Driver.execute(options, gen) match {[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:98:26: not found: type MiddleFirrtlCompiler[0m
+[0m[[0m[31merror[0m] [0m[0m    val midFirrtl = (new MiddleFirrtlCompiler)[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:99:23: not found: value CircuitState[0m
+[0m[[0m[31merror[0m] [0m[0m      .compileAndEmit(CircuitState(chirrtl, ChirrtlForm))[0m
+[0m[[0m[31merror[0m] [0m[0m                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:99:45: not found: value ChirrtlForm[0m
+[0m[[0m[31merror[0m] [0m[0m      .compileAndEmit(CircuitState(chirrtl, ChirrtlForm))[0m
+[0m[[0m[31merror[0m] [0m[0m                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:103:19: not found: type Module[0m
+[0m[[0m[31merror[0m] [0m[0m          case m: Module    => m.copy(name = genName(m.name, ns))[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:104:19: not found: type ExtModule[0m
+[0m[[0m[31merror[0m] [0m[0m          case m: ExtModule => m.copy(name = genName(m.name, ns))[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:106:5: not found: value CircuitState[0m
+[0m[[0m[31merror[0m] [0m[0m    CircuitState([0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:107:7: not found: value circuit[0m
+[0m[[0m[31merror[0m] [0m[0m      circuit = midFirrtl,[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:108:7: not found: value form[0m
+[0m[[0m[31merror[0m] [0m[0m      form = MidForm,[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:109:7: not found: value annotations[0m
+[0m[[0m[31merror[0m] [0m[0m      annotations = AnnotationSeq(inlineAnnos))[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:114:37: not found: type ComponentName[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmods = new mutable.HashMap[ComponentName, CircuitState]()[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:114:52: not found: type CircuitState[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmods = new mutable.HashMap[ComponentName, CircuitState]()[0m
+[0m[[0m[31merror[0m] [0m[0m                                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:115:28: not found: value Namespace[0m
+[0m[[0m[31merror[0m] [0m[0m    val circuitNamespace = Namespace(c)[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:194:7: not found: value logger[0m
+[0m[[0m[31merror[0m] [0m[0m      logger.info(s"[info] $k")[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:195:7: not found: value logger[0m
+[0m[[0m[31merror[0m] [0m[0m      logger.info(v.serialize("[info]   "))[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:202:39: not found: type DefModule[0m
+[0m[[0m[31merror[0m] [0m[0m                      (m: DefModule): DefModule = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:202:27: not found: type DefModule[0m
+[0m[[0m[31merror[0m] [0m[0m                      (m: DefModule): DefModule = {[0m
+[0m[[0m[31merror[0m] [0m[0m                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:206:17: not found: type Module[0m
+[0m[[0m[31merror[0m] [0m[0m        case m: Module =>[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:217:67: not found: type Statement[0m
+[0m[[0m[31merror[0m] [0m[0m  private def onStmt(renames: Map[String, String])(s: Statement): Statement = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:217:55: not found: type Statement[0m
+[0m[[0m[31merror[0m] [0m[0m  private def onStmt(renames: Map[String, String])(s: Statement): Statement = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:219:12: not found: value Connect[0m
+[0m[[0m[31merror[0m] [0m[0m      case Connect(i, l, e) =>[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:220:9: not found: value Connect[0m
+[0m[[0m[31merror[0m] [0m[0m        Connect(i, l, replace(renames)(e))[0m
+[0m[[0m[31merror[0m] [0m[0m        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:228:39: not found: type Expression[0m
+[0m[[0m[31merror[0m] [0m[0m                     (e: Expression): Expression = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:228:26: not found: type Expression[0m
+[0m[[0m[31merror[0m] [0m[0m                     (e: Expression): Expression = {[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:221:12: not found: value PartialConnect[0m
+[0m[[0m[31merror[0m] [0m[0m      case PartialConnect(i, l, e) =>[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:222:9: not found: value PartialConnect[0m
+[0m[[0m[31merror[0m] [0m[0m        PartialConnect(i, l, replace(renames)(e))[0m
+[0m[[0m[31merror[0m] [0m[0m        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:230:16: not found: type WRef[0m
+[0m[[0m[31merror[0m] [0m[0m      case ex: WRef => ex.name match {[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentation.scala:234:16: not found: type Reference[0m
+[0m[[0m[31merror[0m] [0m[0m      case ex: Reference => ex.name match {[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:16:16: object inject is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.inject.Injector[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:18:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:19:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl.passes.{ToWorkingIR, InferTypes, Uniquify, ExpandWhens, CheckInitialization, ResolveKinds, ResolveGenders,[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:21:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl.passes.wiring.WiringTransform[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:22:8: not found: object firrtl[0m
+[0m[[0m[31merror[0m] [0m[0mimport firrtl.annotations.{SingleTargetAnnotation, ComponentName}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:29:5: not found: type SingleTargetAnnotation[0m
+[0m[[0m[31merror[0m] [0m[0m    SingleTargetAnnotation[ComponentName] with FaultAnnos {[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:28:45: not found: type ComponentName[0m
+[0m[[0m[31merror[0m] [0m[0mcase class FaultInjectionAnnotation(target: ComponentName, id: String, injector: Class[_ <: Injector]) extends[0m
+[0m[[0m[31merror[0m] [0m[0m                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:28:93: not found: type Injector[0m
+[0m[[0m[31merror[0m] [0m[0mcase class FaultInjectionAnnotation(target: ComponentName, id: String, injector: Class[_ <: Injector]) extends[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:30:20: not found: type ComponentName[0m
+[0m[[0m[31merror[0m] [0m[0m  def duplicate(x: ComponentName): FaultInjectionAnnotation = this.copy(target = x)[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:33:45: not found: type Transform[0m
+[0m[[0m[31merror[0m] [0m[0mclass FaultInstrumentationTransform extends Transform {[0m
+[0m[[0m[31merror[0m] [0m[0m                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:34:18: not found: type CircuitForm[0m
+[0m[[0m[31merror[0m] [0m[0m  def inputForm: CircuitForm = MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:34:32: not found: value MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m  def inputForm: CircuitForm = MidForm[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:35:19: not found: type CircuitForm[0m
+[0m[[0m[31merror[0m] [0m[0m  def outputForm: CircuitForm = HighForm[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:35:33: not found: value HighForm[0m
+[0m[[0m[31merror[0m] [0m[0m  def outputForm: CircuitForm = HighForm[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:36:97: not found: type Transform[0m
+[0m[[0m[31merror[0m] [0m[0m  def transforms(compMap: Map[String, Seq[(ComponentName, String, Class[_ <: Injector])]]): Seq[Transform] = Seq([0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:36:44: not found: type ComponentName[0m
+[0m[[0m[31merror[0m] [0m[0m  def transforms(compMap: Map[String, Seq[(ComponentName, String, Class[_ <: Injector])]]): Seq[Transform] = Seq([0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:36:78: not found: type Injector[0m
+[0m[[0m[31merror[0m] [0m[0m  def transforms(compMap: Map[String, Seq[(ComponentName, String, Class[_ <: Injector])]]): Seq[Transform] = Seq([0m
+[0m[[0m[31merror[0m] [0m[0m                                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:42:5: not found: value ToWorkingIR[0m
+[0m[[0m[31merror[0m] [0m[0m    ToWorkingIR,[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:43:5: not found: value InferTypes[0m
+[0m[[0m[31merror[0m] [0m[0m    InferTypes,[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:44:5: not found: value Uniquify[0m
+[0m[[0m[31merror[0m] [0m[0m    Uniquify,[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:45:5: not found: value ExpandWhens[0m
+[0m[[0m[31merror[0m] [0m[0m    ExpandWhens,[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/passes/FaultInstrumentationTransform.scala:46:5: not found: value CheckInitialization[0m
+[0m[[0m[31merror[0m] [0m[0m    CheckInitialization,[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m173 errors found[0m

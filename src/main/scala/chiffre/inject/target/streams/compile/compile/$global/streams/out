@@ -1,0 +1,301 @@
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:16:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:17:8: object ChiffreInjector is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:19:8: object InjectorInfo is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.{InjectorInfo, ScanField, HasWidth}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:21:42: not found: type ScanField[0m
+[0m[[0m[31merror[0m] [0m[0mcase class Condition(width: Int) extends ScanField[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:22:48: not found: type ScanField[0m
+[0m[[0m[31merror[0m] [0m[0mcase class ConditionInject(width: Int) extends ScanField[0m
+[0m[[0m[31merror[0m] [0m[0m                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:24:74: not found: type InjectorInfo[0m
+[0m[[0m[31merror[0m] [0m[0mcase class ConditionInjectorInfo(bitWidth: Int, cycleWidth: Int) extends InjectorInfo {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:16:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:19:8: object InjectorInfo is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.{InjectorInfo, ScanField, HasWidth}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:21:38: not found: type ScanField[0m
+[0m[[0m[31merror[0m] [0m[0mcase class Cycle(width: Int) extends ScanField[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:22:44: not found: type ScanField[0m
+[0m[[0m[31merror[0m] [0m[0mcase class CycleInject(width: Int) extends ScanField[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:16:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:30:48: not found: type Module[0m
+[0m[[0m[31merror[0m] [0m[0mabstract class Injector(bitWidth: Int) extends Module with HasScanState {[0m
+[0m[[0m[31merror[0m] [0m[0m                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:20:8: object ScanIo is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.{ScanIo, HasScanState}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:30:60: not found: type HasScanState[0m
+[0m[[0m[31merror[0m] [0m[0mabstract class Injector(bitWidth: Int) extends Module with HasScanState {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:29:20: not found: value Reg[0m
+[0m[[0m[31merror[0m] [0m[0m  val dataTarget = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:29:24: not found: value UInt[0m
+[0m[[0m[31merror[0m] [0m[0m  val dataTarget = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:29:40: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val dataTarget = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:31:18: not found: value Reg[0m
+[0m[[0m[31merror[0m] [0m[0m  val flipMask = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:31:22: not found: value UInt[0m
+[0m[[0m[31merror[0m] [0m[0m  val flipMask = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:31:36: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val flipMask = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:32:23: not found: value Reg[0m
+[0m[[0m[31merror[0m] [0m[0m  val dataCollected = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:32:27: not found: value UInt[0m
+[0m[[0m[31merror[0m] [0m[0m  val dataCollected = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:32:41: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val dataCollected = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:32:17: not found: value RegInit[0m
+[0m[[0m[31merror[0m] [0m[0m  val enabled = RegInit(false.B)[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:19:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.experimental.{ChiselAnnotation, annotate, RunFirrtlTransform}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:18:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.core.BaseModule[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:17:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.util.Cat[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:32:31: value B is not a member of Boolean[0m
+[0m[[0m[31merror[0m] [0m[0m  val enabled = RegInit(false.B)[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:31:12: not found: value IO[0m
+[0m[[0m[31merror[0m] [0m[0m  val io = IO(new InjectorIo(bitWidth))[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:23:52: not found: type Bundle[0m
+[0m[[0m[31merror[0m] [0m[0msealed class InjectorIo(val bitWidth: Int) extends Bundle {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:43:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (io.scan.clk) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:50:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (enabled && RegNext(!enabled)) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:51:25: not found: value name[0m
+[0m[[0m[31merror[0m] [0m[0m    printf(s"""|[info] $name enabled[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:57:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (!enabled && RegNext(enabled)) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:58:22: not found: value name[0m
+[0m[[0m[31merror[0m] [0m[0m    printf(s"[info] $name disabled\n")[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:61:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (fire) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:62:22: not found: value name[0m
+[0m[[0m[31merror[0m] [0m[0m    printf(s"[info] $name injecting 0x%x into 0x%x to output 0x%x!\n", flipMask, io.in, io.out)[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/ConditionInjector.scala:68:107: not found: type ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0mclass ConditionInjector32(bitWidth: Int, val scanId: String) extends ConditionInjector(bitWidth, 32) with ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:17:8: object ChiffreInjector is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:24:70: not found: type InjectorInfo[0m
+[0m[[0m[31merror[0m] [0m[0mcase class CycleInjectorInfo(bitWidth: Int, cycleWidth: Int) extends InjectorInfo {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:29:21: not found: value Reg[0m
+[0m[[0m[31merror[0m] [0m[0m  val cycleTarget = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:29:25: not found: value UInt[0m
+[0m[[0m[31merror[0m] [0m[0m  val cycleTarget = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:29:41: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val cycleTarget = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:30:22: not found: value Reg[0m
+[0m[[0m[31merror[0m] [0m[0m  val cycleCounter = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:30:26: not found: value UInt[0m
+[0m[[0m[31merror[0m] [0m[0m  val cycleCounter = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:30:42: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val cycleCounter = Reg(UInt(cycleWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:31:18: not found: value Reg[0m
+[0m[[0m[31merror[0m] [0m[0m  val flipMask = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:31:22: not found: value UInt[0m
+[0m[[0m[31merror[0m] [0m[0m  val flipMask = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:31:36: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val flipMask = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:38:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (enabled) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:42:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (io.scan.clk) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:50:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (enabled && RegNext(!enabled)) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:51:25: not found: value name[0m
+[0m[[0m[31merror[0m] [0m[0m    printf(s"""|[info] $name enabled[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:57:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (!enabled && RegNext(enabled)) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:58:22: not found: value name[0m
+[0m[[0m[31merror[0m] [0m[0m    printf(s"[info] $name disabled\n")[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:61:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (fire) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:62:22: not found: value name[0m
+[0m[[0m[31merror[0m] [0m[0m    printf(s"[info] $name injecting 0x%x into 0x%x to output 0x%x!\n", flipMask, io.in, io.out)[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/CycleInjector.scala:68:99: not found: type ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0mclass CycleInjector32(bitWidth: Int, val scanId: String) extends CycleInjector(bitWidth, 32) with ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/IdentityInjector.scala:16:8: object InjectorInfo is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.{InjectorInfo, ChiffreInjector}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/IdentityInjector.scala:18:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/IdentityInjector.scala:20:36: not found: type InjectorInfo[0m
+[0m[[0m[31merror[0m] [0m[0mcase object NoInjectorInfo extends InjectorInfo {[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/IdentityInjector.scala:24:96: not found: type ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0mclass IdentityInjector(bitWidth: Int, val scanId: String) extends Injector(bitWidth: Int) with ChiffreInjector {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:24:18: not found: type ScanIo[0m
+[0m[[0m[31merror[0m] [0m[0m  val scan = new ScanIo[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:25:12: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m  val in = Input(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:25:18: not found: value UInt[0m
+[0m[[0m[31merror[0m] [0m[0m  val in = Input(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:25:32: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val in = Input(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:26:13: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m  val out = Output(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:26:20: not found: value UInt[0m
+[0m[[0m[31merror[0m] [0m[0m  val out = Output(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:26:34: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val out = Output(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:33:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (io.scan.en) { enabled := ~enabled }[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/Injector.scala:38:43: not found: value Module[0m
+[0m[[0m[31merror[0m] [0m[0m  lazy val injectors = Seq.fill(bitWidth)(Module(gen))[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:16:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:17:8: object ChiffreInjector is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:19:8: object ScanField is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.{ScanField, InjectorInfo, ProbabilityBind}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:21:37: not found: type ScanField[0m
+[0m[[0m[31merror[0m] [0m[0mcase class Seed(width: Int) extends ScanField[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:22:43: not found: type ScanField[0m
+[0m[[0m[31merror[0m] [0m[0mcase class Difficulty(width: Int) extends ScanField with ProbabilityBind[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:22:58: not found: type ProbabilityBind[0m
+[0m[[0m[31merror[0m] [0m[0mcase class Difficulty(width: Int) extends ScanField with ProbabilityBind[0m
+[0m[[0m[31merror[0m] [0m[0m                                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:24:68: not found: type InjectorInfo[0m
+[0m[[0m[31merror[0m] [0m[0mcase class LfsrInjectorInfo(bitWidth: Int, lfsrWidth: Int) extends InjectorInfo {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:29:20: not found: value RegInit[0m
+[0m[[0m[31merror[0m] [0m[0m  val difficulty = RegInit(0.U(lfsrWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:29:30: value U is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val difficulty = RegInit(0.U(lfsrWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:29:42: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val difficulty = RegInit(0.U(lfsrWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:30:14: not found: value RegInit[0m
+[0m[[0m[31merror[0m] [0m[0m  val seed = RegInit(1.U(lfsrWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:30:24: value U is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val seed = RegInit(1.U(lfsrWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:30:36: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val seed = RegInit(1.U(lfsrWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:33:14: not found: value Module[0m
+[0m[[0m[31merror[0m] [0m[0m  val lfsr = Module(new perfect.random.Lfsr(lfsrWidth))[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:33:25: not found: value perfect[0m
+[0m[[0m[31merror[0m] [0m[0m  val lfsr = Module(new perfect.random.Lfsr(lfsrWidth))[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:40:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (io.scan.clk) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:48:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (enabled && RegNext(!enabled)) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:49:25: not found: value name[0m
+[0m[[0m[31merror[0m] [0m[0m    printf(s"""|[info] $name enabled[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:55:3: not found: value when[0m
+[0m[[0m[31merror[0m] [0m[0m  when (!enabled && RegNext(enabled)) {[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:56:22: not found: value name[0m
+[0m[[0m[31merror[0m] [0m[0m    printf(s"[info] $name disabled\n")[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/LfsrInjector.scala:61:65: not found: type ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0m    InjectorBitwise(bitWidth, new LfsrInjector(lfsrWidth)) with ChiffreInjector {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/StuckAt.scala:16:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/StuckAt.scala:17:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.util.Fill[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/StuckAt.scala:18:8: object ChiffreInjector is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.ChiffreInjector[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/StuckAt.scala:20:8: object ScanField is not a member of package chiffre[0m
+[0m[[0m[31merror[0m] [0m[0mimport chiffre.{ScanField, InjectorInfo}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/StuckAt.scala:22:37: not found: type ScanField[0m
+[0m[[0m[31merror[0m] [0m[0mcase class Mask(width: Int) extends ScanField[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/StuckAt.scala:23:40: not found: type ScanField[0m
+[0m[[0m[31merror[0m] [0m[0mcase class StuckAt(width: Int) extends ScanField[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/StuckAt.scala:25:55: not found: type InjectorInfo[0m
+[0m[[0m[31merror[0m] [0m[0mcase class StuckAtInjectorInfo(bitWidth: Int) extends InjectorInfo {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/game11189/chiffre/src/main/scala/chiffre/inject/StuckAt.scala:30:14: not found: value Reg[0m
+[0m[[0m[31merror[0m] [0m[0m  val mask = Reg(UInt(bitWidth.W))[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m111 errors found[0m
