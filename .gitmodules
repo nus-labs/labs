@@ -1,0 +1,3 @@
+[submodule "firrtl"]
+	path = firrtl
+	url = https://github.com/freechipsproject/firrtl
