@@ -1,3 +1,6 @@
 [submodule "firrtl"]
 	path = firrtl
 	url = https://github.com/freechipsproject/firrtl
+[submodule "yosys"]
+	path = yosys
+	url = https://github.com/YosysHQ/yosys
