@@ -1,0 +1,34 @@
+[
+  {
+    "class":"labs.passes.ClockAnnotation",
+    "target":"dummy.dummy.clk"
+  },
+  {
+    "class":"labs.passes.ResetAnnotation",
+    "target":"dummy.dummy.reset_n"
+  },
+  {
+    "class":"chiffre.passes.FaultInjectionAnnotation",
+    "target":"aes.aes_encipher_block.block_w0_reg",
+    "id":"main",
+    "injector":"chiffre.inject.ConditionInjectorCaller"
+  },
+  {
+    "class":"chiffre.passes.ScanChainAnnotation",
+    "target":"aes.FaultController.scan",
+    "ctrl":"master",
+    "dir":"scan",
+    "id":"main"
+  },
+  {
+    "class":"labs.passes.FaultControllerUDAnnotation",
+	"target":"aes.aes_encipher_block.round_ctr_reg",
+	"data_target":"h_a",
+	"number_of_fires": 1,
+	"affected_bits": [1]
+  },
+  {
+    "class":"labs.passes.FaultTolerantTMRAnnotation",
+    "target":"aes.aes_encipher_block.None"
+  }
+]

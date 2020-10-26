@@ -1,0 +1,8 @@
+read_verilog verilog_adder.v 
+hierarchy -check -top Adder
+setattr -set keep 1
+proc
+opt
+async2sync
+opt
+write_firrtl TestDesign.fir

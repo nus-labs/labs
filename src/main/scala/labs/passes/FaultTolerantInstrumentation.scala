@@ -1,16 +1,3 @@
-// Copyright 2017 IBM
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 package labs.passes
 
 import labs._
@@ -45,7 +32,15 @@ object signals{
   var start_signal = ""
 }
 
-// NEED FIX BUG OUTPUT_SIZE.ARR CAN BE FOR DIFFERENT TECHNIQUES
+/*case FaultTolerantAnnotation(z, mode, ready_signal, start_signal) => {
+			mode match{
+				case "DMR" => {redundancy_number.n = 2; redundancy_number.mode = "DMR"; cc = dmr.run(c, z)}
+				case "TMR" => {redundancy_number.n = 3; redundancy_number.mode = "TMR"; cc = tmr.run(c, z)}
+				case "Temporal" => {redundancy_number.n = 2; redundancy_number.mode = "Temporal"; signals.ready_signal = ready_signal; signals.start_signal = start_signal; cc = temporal.run(c, z)}
+				case other => throw new Exception(mode + " Incorrect Configuration")
+			}
+		}
+*/
 
 class FaultTolerantInstrumentation extends Transform {
  def inputForm: CircuitForm = HighForm
@@ -56,22 +51,34 @@ class FaultTolerantInstrumentation extends Transform {
 	var temporal = new Temporal
 	var cc = c
 	annos.foreach{
-		case FaultTolerantAnnotation(z, mode, ready_signal, start_signal) => {
+		case FaultTolerantDMRAnnotation(z) => {
 			output_size.arr = Set()
 			redundancy_number.count = 0
-			mode match{
-				case "DMR" => {redundancy_number.n = 2; redundancy_number.mode = "DMR"; cc = dmr.run(c, z)}
-				case "TMR" => {redundancy_number.n = 3; redundancy_number.mode = "TMR"; cc = tmr.run(c, z)}
-				case "Temporal" => {redundancy_number.n = 2; redundancy_number.mode = "Temporal"; signals.ready_signal = ready_signal; signals.start_signal = start_signal; cc = temporal.run(c, z)}
-				case other => throw new Exception(mode + " Incorrect Configuration")
-			}
+			redundancy_number.n = 2; 
+			redundancy_number.mode = "DMR" 
+			cc = dmr.run(c, z)
 		}
+		case FaultTolerantTMRAnnotation(z) => {
+			output_size.arr = Set()
+			redundancy_number.count = 0
+			redundancy_number.n = 3
+			redundancy_number.mode = "TMR"
+			cc = tmr.run(c, z)
+		}
+		case FaultTolerantTemporalAnnotation(z, ready_signal, start_signal) => {
+			redundancy_number.n = 2
+			redundancy_number.mode = "Temporal" 
+			signals.ready_signal = ready_signal 
+			signals.start_signal = start_signal 
+			cc = temporal.run(c, z)
+		}
+		case other => {}
 	}
 	return cc
-}
+  }
 
   def execute(state: CircuitState): CircuitState = {
-	var annos = state.annotations.toList.filter(_.isInstanceOf[FaultTolerantAnnotation])
+	var annos = state.annotations.toList
 	state.copy(circuit = run(state.circuit, annos))
   }
 }

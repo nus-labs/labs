@@ -148,10 +148,10 @@ class ScanChainTransform extends Transform {
         jsonFile.close()
 	// GAME CHANGED HERE
         val ax = s.foldLeft(Seq[Annotation]()){ case (a, (name, v)) =>
-          val masterIn = v.masterScan.copy(name=v.masterScan.name + ".in")
-          val masterOut = v.masterScan.copy(name=v.masterScan.name + ".out")
-          val masterClk = v.masterScan.copy(name=v.masterScan.name + ".clk")
-          val masterEn = v.masterScan.copy(name=v.masterScan.name + ".en")
+          val masterIn = v.masterScan.copy(name=v.masterScan.name + "_in")
+          val masterOut = v.masterScan.copy(name=v.masterScan.name + "_out")
+          val masterClk = v.masterScan.copy(name=v.masterScan.name + "_clk")
+          val masterEn = v.masterScan.copy(name=v.masterScan.name + "_en")
 
           val masterAnnotations = Seq(
             SourceAnnotation(masterClk, "scan_clk"),

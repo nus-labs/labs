@@ -1,16 +1,3 @@
-// Copyright 2017 IBM
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 package labs.passes
 
 import labs._
@@ -36,7 +23,6 @@ class TMR {
 	modules = modules.map(splitM(_,component))
 	var k = c.copy(modules=modules)
 	var size_lst = ArrayBuffer[Int]()
-
 	output_size.arr.foreach{
 		case UIntType(width) => { // Can rely on ordering from set?
 			var bitwidth = width.asInstanceOf[IntWidth].width.toInt
@@ -78,21 +64,58 @@ class TMR {
 	kk
   }
 
+  def is_input_output(expr: Expression, componentName: String): Boolean = {
+	if(expr.isInstanceOf[WRef]){
+		if(expr.asInstanceOf[WRef].name == componentName) return true
+		else return false
+	}
+	else if(expr.isInstanceOf[DoPrim]){
+		expr.foreachExpr( 
+			x => if(is_input_output(x, componentName)) return true
+		)
+		return false
+	}
+	else{
+		return false
+		//throw new Exception(expr.getClass + " not yet implemented")
+	}
+  }
+
   def splitM(m: DefModule, component: ComponentName): DefModule = { 
 	if( component.module.name == m.name ){
+		var input_lst = List[(String, Type)]()
+		var output_lst = List[(String, Type)]()
+		m.foreachPort{
+			case Port(_, name, Input, tpe) => input_lst = input_lst :+ (name, tpe)
+			case Port(_, name, Output, tpe) => output_lst = output_lst :+ (name, tpe)
+		}
 		if( component.name == "None" ){
-			var io_lst = List[String]()
-			var input_lst = List[(String, Type)]()
-			var output_lst = List[(String, Type)]()
-			m.foreachPort{
-				case Port(_, name, Input, tpe) => input_lst = input_lst :+ (name, tpe)
-				case Port(_, name, Output, tpe) => output_lst = output_lst :+ (name, tpe)
-			}
 			var mm = m.mapStmt(copyComponents(_, input_lst, output_lst)).asInstanceOf[Module] // expect Block
 			return mm
 		}
 		else{
-			var mm = add_component(m.asInstanceOf[Module], component)
+			var m_stmts = m.asInstanceOf[Module].body.asInstanceOf[Block].stmts
+			println(component.name)
+			var input_stmt: Connect = null
+			var output_stmt: Connect = null
+			m_stmts.foreach{
+				case Connect(info, ref1, ref2) =>{
+					if(is_input_output(ref1, component.name)){
+						input_stmt = Connect(info, ref1, ref2)
+						println(input_stmt)
+					}
+					if(is_input_output(ref2, component.name)){
+						output_stmt = Connect(info, ref1, ref2)
+						println(output_stmt)
+					}
+				}
+				case other => other
+			}
+			if(input_stmt == null) throw new Exception("The input port is not found")
+			if(output_stmt == null) throw new Exception("The output port is not found")
+
+			var mm = add_component(m.asInstanceOf[Module], component, input_stmt.expr, output_stmt.loc)
+			
 			return mm
 		}
 	}
@@ -105,19 +128,26 @@ class TMR {
 
   def newNameT(name: String): String = if (name != "clock" && name != "reset") name + "_temporal" else name
 
-  def add_component(m: Module, component: ComponentName): Module = {
+  def add_component(m: Module, component: ComponentName, input_data: Expression, output_data: Expression): Module = {
 	var name = component.name
-	var stmts = m.asInstanceOf[Module].body.asInstanceOf[Block].stmts
+	var stmts = m.asInstanceOf[Module].body.asInstanceOf[Block].stmts.asInstanceOf[ArrayBuffer[Statement]]
 	var allregs = stmts.filter(_.isInstanceOf[DefRegister])
 	var allwire = stmts.filter(_.isInstanceOf[DefWire])
-	if(redundancy_number.n == 2){
-		var reg = allregs.filter(_.asInstanceOf[DefRegister].name == component.name).last.asInstanceOf[DefRegister]
-		var added_reg = reg.copy(name = newNameS(reg.name, 0))
-		stmts = stmts :+ added_reg
-		//stmts = add_detector_component(stmts, component, reg.tpe)
-		output_size.arr += reg.tpe
-	}
-	//TODO
+	
+	var reg = allregs.filter(_.asInstanceOf[DefRegister].name == component.name).last.asInstanceOf[DefRegister]
+	var added_reg = reg.copy(name = newNameS(reg.name, 0))
+	var added_reg2 = reg.copy(name = newNameS(reg.name, 1))
+
+	// add inputs
+	var reg_instance = WRef(newNameS(component.name, 0), reg.tpe, ExpKind, UNKNOWNGENDER)
+	var reg_instance2 = WRef(newNameS(component.name, 1), reg.tpe, ExpKind, UNKNOWNGENDER)
+	var input_reg_instance = Connect(NoInfo, reg_instance, input_data)
+	var input_reg_instance2 = Connect(NoInfo, reg_instance2, input_data)
+
+	stmts = stmts :+ added_reg :+ added_reg2 :+ input_reg_instance :+ input_reg_instance2
+
+	stmts = add_voter_component(stmts, component.name, reg.tpe, output_data)
+	output_size.arr += reg.tpe
 	var mm = m.asInstanceOf[Module].copy(body = Block(stmts))
 	mm
   }
@@ -228,8 +258,37 @@ class TMR {
 	var all_detect_signals: ArrayBuffer[Expression] = ArrayBuffer()
 	added_stmts = (temp_block.stmts.toBuffer ++ added_stmts).asInstanceOf[ArrayBuffer[Statement]]
 	added_stmts = added_stmts -- del_lst
+	added_stmts.foreach(_.serialize)
 	temp_block.copy(stmts=added_stmts)
   }
+
+  def add_voter_component(added_stmts: ArrayBuffer[Statement], componentName: String, tpe:Type,  output_data: Expression): ArrayBuffer[Statement] = {
+	var count = 0
+	var voter_count = 0
+	var new_stmts = added_stmts
+	var all_detect_signals = ArrayBuffer[Expression]()
+
+	var reg_ori_instance = WRef(componentName, tpe, ExpKind, UNKNOWNGENDER)
+	var reg_instance = WRef(newNameS(componentName, 0), tpe, ExpKind, UNKNOWNGENDER)
+	var reg_instance2 = WRef(newNameS(componentName, 1), tpe, ExpKind, UNKNOWNGENDER)
+
+	val name = "v" + count.toString
+	val size = tpe
+	val bitwidth = size.asInstanceOf[UIntType].width.asInstanceOf[IntWidth].width.toInt	
+	val ports = ArrayBuffer(Field("clock", Flip, ClockType), Field("reset", Flip, UIntType(IntWidth(1))), Field("io", Default, BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("in3", Flip, size), Field("out", Default, size)))))
+	val wref = WRef(name, BundleType(ports), ExpKind, UNKNOWNGENDER)
+	val inside_io = BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("in3", Flip, size), Field("out", Default, size)))
+	new_stmts += WDefInstance(NoInfo, name, "Voter" + bitwidth.toString, UnknownType)
+	new_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in1", size, FEMALE), reg_ori_instance)
+	new_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in2", size, FEMALE), reg_instance)
+	new_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in3", size, FEMALE), reg_instance2)
+	new_stmts += Connect(NoInfo, WSubField(wref, "clock", ClockType, FEMALE), WRef("clock", ClockType, ExpKind, MALE))
+	new_stmts += Connect(NoInfo, WSubField(wref, "reset", UIntType(IntWidth(1)), FEMALE), WRef("reset", UIntType(IntWidth(1)), ExpKind, MALE))
+	new_stmts += Connect(NoInfo, output_data, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "out", size, MALE))
+	count += 1
+	new_stmts
+  }
+
 
   def add_voter(added_stmts: ArrayBuffer[Statement], feed_to_output_map: scala.collection.mutable.Map[String, ArrayBuffer[Expression]]): ArrayBuffer[Statement] = {
 	var count = 0
@@ -238,8 +297,6 @@ class TMR {
 	feed_to_output_map.foreach{
 		mapping =>{
 			val name = "v" + count.toString
-			//println("MAPPING")
-			//println(mapping)
 			val output = mapping._1
 			val feed_to_output = mapping._2
 			val size = feed_to_output(0).tpe
