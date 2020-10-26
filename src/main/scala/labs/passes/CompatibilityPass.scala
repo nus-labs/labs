@@ -28,7 +28,7 @@ class CompatibilityPass() extends Transform {
 	val k = c.copy(modules = c.modules.map(splitM(_, clockname, resetname)))
 	k
 }
-  def splitM(m: DefModule, clockname: String, resetname: String): DefModule = { // if mapport then print then return m will cause problems
+  def splitM(m: DefModule, clockname: String, resetname: String): DefModule = { 
 	val k = m.mapPort(splitP(_, clockname, resetname))
 	k.mapStmt(splitS(_, clockname, resetname))
 }

@@ -69,7 +69,6 @@ class FaultInstrumentation(compMap: Map[String, Seq[(ComponentName, String, Clas
   def outputForm: CircuitForm = MidForm
   def execute(state: CircuitState): CircuitState = {
     val modifications = analyze(state.circuit)
-    println("WHERE!!!!!")
     val (mxx, ax) = modifications
       .foldLeft((Seq[DefModule](), Seq[Annotation]())){
         case ((m, a), (_, Modifications(_,_,mm,aa,_))) => (m ++ mm, a ++ aa) }

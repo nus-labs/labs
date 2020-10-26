@@ -28,8 +28,6 @@ class FaultControllerTransform extends Transform {
 												  case b: ResetAnnotation => b
 												  case c: FaultControllerUDAnnotation => c
 												  case d: FaultInjectionAnnotation => d}
-		println("MYANNOS")
-		println(myAnnos)
 		myAnnos match{
 			case Nil => state
 			case p =>

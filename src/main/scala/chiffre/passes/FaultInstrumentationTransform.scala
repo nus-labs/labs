@@ -39,7 +39,7 @@ class FaultInstrumentationTransform extends Transform {
      * up. this massive list is what is helping with that. Assumedly, this
      * can be done better if we can directly get at the WIR from the
      * inline compilation. */
-    ToWorkingIR,
+	ToWorkingIR,
     InferTypes,
     Uniquify,
     ExpandWhens,

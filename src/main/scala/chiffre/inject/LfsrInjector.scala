@@ -34,7 +34,7 @@ sealed class LfsrInjector(val lfsrWidth: Int, val faultType: String) extends Inj
   lfsr.io.seed.valid := io.scan.en
   lfsr.io.seed.bits := seed
 
-  val fire = enabled && (lfsr.io.y > difficulty) // GAME EDITED HERE
+  val fire = enabled && (lfsr.io.y > difficulty)
 
   if(faultType == "bit-set")
   	io.out := Mux(fire, 1.U, io.in)
@@ -51,7 +51,6 @@ sealed class LfsrInjector(val lfsrWidth: Int, val faultType: String) extends Inj
 
   io.scan.out := difficulty(0)
 
-//  when (enabled && RegNext(!enabled)) {
   when(enabled){
     printf(s"""|[info] $name enabled
                |[info]   - seed: 0x%x
@@ -61,9 +60,6 @@ sealed class LfsrInjector(val lfsrWidth: Int, val faultType: String) extends Inj
                |""".stripMargin, seed, difficulty, io.in, io.out)
   }
 
-//  when (!enabled && RegNext(enabled)) {
-//    printf(s"[info] $name disabled\n")
-//  }
 }
 
 class LfsrInjectorN(bitWidth: Int, val lfsrWidth: Int, val scanId: String, val faultType: String) extends
@@ -71,12 +67,10 @@ class LfsrInjectorN(bitWidth: Int, val lfsrWidth: Int, val scanId: String, val f
   lazy val info = LfsrInjectorInfo(bitWidth, lfsrWidth)
 }
 
-class LfsrInjector4(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 4, scanId, "bit-flip") // scalastyle:ignore
-
 class LfsrInjector16(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 16, scanId, "bit-flip") // scalastyle:ignore
 
-class LfsrInjector32(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 32, scanId, "bit-flip") // scalastyle:ignore
+class LfsrInjector16_bitset(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 16, scanId, "bit-set") // scalastyle:ignore
 
-class LfsrInjector32_bitset(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 32, scanId, "bit-set") // scalastyle:ignore
+class LfsrInjector16_bitreset(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 16, scanId, "bit-reset") // scalastyle:ignore
 
-class LfsrInjector32_bitreset(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 32, scanId, "bit-reset") // scalastyle:ignore
+

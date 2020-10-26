@@ -26,11 +26,9 @@ case class ConditionInjectorInfo(bitWidth: Int) extends InjectorInfo {
 }
 
 class ConditionInjector(bitWidth: Int, faultType: String) extends Injector(bitWidth){
-//  val flipMask = RegInit(0.U(bitWidth.W))
   val resetB = ~reset.toBool
   lazy val info = ConditionInjectorInfo(bitWidth)
 
-  //withReset (resetB){
   val flipMask = Reg(UInt(bitWidth.W))
  
   val fire = enabled & ~io.scan.clk
@@ -42,10 +40,6 @@ class ConditionInjector(bitWidth: Int, faultType: String) extends Injector(bitWi
 	io.out := Mux(fire, io.in ^ flipMask, io.in)
   
   flipMask := Mux(io.scan.clk, (io.scan.in ## flipMask) >> 1, flipMask)
-//  when (io.scan.clk) {
-//    enabled := false.B
-//    flipMask := (io.scan.in ## flipMask) >> 1
-//  }
 
   io.scan.out := flipMask(0)
 
@@ -56,7 +50,6 @@ class ConditionInjector(bitWidth: Int, faultType: String) extends Injector(bitWi
            |[info]   - output: 0x%x
                |""".stripMargin, flipMask, io.in, io.out)
   }
-  //}
 }
 
 // scalastyle:off magic.number

@@ -14,10 +14,9 @@ sealed class PreventerIo(val bitWidth: Int) extends Bundle{
 class Preventer(var bitWidth: Int, var enabled: Boolean) extends Module{
   val io = IO(new PreventerIo(bitWidth))
   val resetB = ~reset.asBool
-  withReset(resetB){
-  	val fault_detected = RegInit(0.U)
-  	fault_detected := Mux(io.detect, 1.U, fault_detected)
-  	if(enabled) io.out := Mux(fault_detected === 1.U, 0.U, io.in)
-  	else io.out := io.in
-  }
+  val fault_detected = RegInit(0.U)
+  fault_detected := Mux(io.detect, 1.U, fault_detected)
+  if(enabled) io.out := Mux(fault_detected === 1.U, 0.U, io.in)
+  else io.out := io.in
+  
 }

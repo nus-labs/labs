@@ -29,12 +29,8 @@ sealed class InjectorIo(val bitWidth: Int) extends Bundle {
 /** The sketch of an injector module */
 abstract class Injector(bitWidth: Int) extends Module with HasScanState {
   val io = IO(new InjectorIo(bitWidth))
-//  val enabled = RegInit(false.B)
   val enabled = Wire(Bool())
-//  enabled := Mux(io.scan.clk, false.B, 
-		//Mux(io.scan.en, ~enabled, enabled))
   enabled := Mux(io.scan.clk, false.B, io.scan.en)
-  //when (io.scan.en) { enabled := ~enabled }
 }
 
 /** An injector composed of individual single-bit injectors */

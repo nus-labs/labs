@@ -22,8 +22,7 @@ sealed class CtrlRegIo extends Bundle{
 class CtrlReg extends Module{
 	val io = IO(new CtrlRegIo)
 	val resetB = ~(reset.toBool)
-	withReset(resetB){
-		val counter = RegInit(0.U(2.W))
+	val counter = RegInit(0.U(2.W))
 	
 	when ((counter === 0.U) & io.start){
 		counter := 1.U
@@ -40,5 +39,5 @@ class CtrlReg extends Module{
 	
 	io.ctrl := counter
 	io.finished := io.ready & (counter === 2.U || counter === 0.U)
-	}
+	
 }

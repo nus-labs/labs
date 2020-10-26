@@ -21,9 +21,7 @@ sealed class InputRegIo(bitwidth: Int) extends Bundle{
 class InputReg(bitwidth: Int) extends Module{
 	val io = IO(new InputRegIo(bitwidth))
 	val resetB = ~reset.toBool
-	withReset (resetB){
 	val stored_input = RegInit(0.U(bitwidth.W))
 	stored_input := Mux(io.ctrl === 1.U, stored_input, io.in)
 	io.out := Mux(io.ctrl === 1.U && io.ready === 1.U, stored_input, io.in)
-	}
 }

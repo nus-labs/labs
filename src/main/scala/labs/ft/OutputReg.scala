@@ -22,7 +22,6 @@ sealed class OutputRegIo(bitwidth: Int) extends Bundle{
 class OutputReg(bitwidth: Int) extends Module{
 	val io = IO(new OutputRegIo(bitwidth))
 	val resetB = ~reset.toBool
-	withReset (resetB){
 	val fault_detected = RegInit(0.U)
 	val stored_output = RegInit(VecInit(Seq.fill(2)(0.U(bitwidth.W))))
 	for (i <- 0 to 1){
@@ -34,5 +33,4 @@ class OutputReg(bitwidth: Int) extends Module{
 	io.detect := (detector.io.detect) & (io.ctrl =/= 2.U) & io.ready
 	fault_detected := Mux(io.detect, 1.U, fault_detected)
 	io.out := Mux(fault_detected === 1.U, 0.U, io.in)
-	}
 }

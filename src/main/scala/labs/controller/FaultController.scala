@@ -65,57 +65,39 @@ class FaultController(var input_width: Int, var datatarget: String, var number_o
 		return out	
 	}
 	val resetB = ~reset.asBool
-	//withReset (resetB){
+	
 	val lfsr_length = 16
-	//val number_of_injectors = faulty_width
-	//val datatarget = "h_800011c8".U
-    //val number_of_fires = 4096.U
-	//val bits = 11// bits that will be affected from idx 0
-
 	val condition = "h_80001b70".U
-//	val set = r.nextInt(16).U
 
-    //val datalength = 2 * lfsr_length * number_of_injectors
   	val datalength = if (affected_bits.size != 0) faulty_width else faulty_width * 2 * 16
 	val configuration = if (affected_bits.size != 0) choose_bit( affected_bits, faulty_width ).U else random_config(faulty_width).U     
 
-	println("RANDOMCONFIG")
-	println(configuration)
     // put logics here
-
-//	val number_of_sets = RegInit(0.U(set.getWidth.W))
-//	number_of_sets := Mux(condition === io.data_in, number_of_sets + 1.U, number_of_sets)
-
-	//val condition_met = RegInit(0.U(1.W))
-	//condition_met := Mux(io.data_in === "h_80001bc0".U, 0.U,
-						//Mux(condition === io.data_in, 1.U, condition_met))
 
 	val fire = (scan.clk === false.B) & (io.data_in === datatarget.U)// & condition_met.asBool // & set === number_of_sets
 
-        val count = RegInit(0.U(datalength.U.getWidth.W)) // used for sending configuration information to an injector
-        count := Mux(count === datalength.U, count, count + 1.U)
+    val count = RegInit(0.U(datalength.U.getWidth.W)) // used to send configuration information to an injector
+    count := Mux(count === datalength.U, count, count + 1.U)
 
-        val conf = RegInit(configuration)
-        conf := Mux(scan.clk, conf >> 1.U, conf)
+    val conf = RegInit(configuration)
+    conf := Mux(scan.clk, conf >> 1.U, conf)
 
-        //val fire = scan.clk === false.B & (io.data_in === datatarget | io.data_in === datatarget2 )
+    val count_fires = RegInit(0.U(number_of_fires.U.getWidth.W)) // used to count the number of fires
+    count_fires := Mux(count_fires === number_of_fires.U, count_fires, count_fires + fire)
 
-        val count_fires = RegInit(0.U(number_of_fires.U.getWidth.W)) // used for counting number of fires (in this case it is 16)
-        count_fires := Mux(count_fires === number_of_fires.U, count_fires, count_fires + fire)
+    val stop_fire = Wire(Bool())
+    stop_fire := Mux(scan.clk, 0.U,
+                    Mux(count_fires === number_of_fires.U, 1.U, 0.U))
 
-        val stop_fire = Wire(Bool())
-        stop_fire := Mux(scan.clk, 0.U,
-                        Mux(count_fires === number_of_fires.U, 1.U, 0.U))
+    scan.out := Mux(fire & !stop_fire, 0.U,
+                    Mux(conf(0) , 1.U, 0.U)) 
 
-        scan.out := Mux(fire & !stop_fire, 0.U,
-                        Mux(conf(0) , 1.U, 0.U)) 
-
-        scan.clk := count =/= datalength.U
+    scan.clk := count =/= datalength.U
 
 	scan.en := Mux(fire & !stop_fire, 1.U, 0.U)
 
 	when (fire & !stop_fire){
 		printf(s"""|[info] Fire!""")
 	}
-	//}
+	
 }

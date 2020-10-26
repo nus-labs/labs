@@ -43,26 +43,15 @@ class FaultControllerInstrumentation() extends Transform {
 	if(input_width == 0){
 		return c
 	}
-	//println("INFOOO")
-	//println((input_width, data_target, number_of_fires, affected_bits, faulty_width))
 	var elab = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new FaultController(input_width, data_target, number_of_fires, affected_bits, faulty_width)))
-	//println("ELAB")
-	//println(elab)
 	elab = ToWorkingIR.run(elab)
 	temp = temp ++ elab.modules
-	//println("TEMP")
-	//println(temp)
-	//val k = c.copy(modules = c.modules.map(splitM(_)))
 	val k = c.copy(modules = temp)
-	//println("END PASS")
-	//println(k)
 	k
 }
 
-  def find_width(modules: Seq[DefModule], target: ComponentName): Int = { // if mapport then print then return m will cause problems
+  def find_width(modules: Seq[DefModule], target: ComponentName): Int = {
 	var module = modules.filter(_.name == target.module.name)
-	println("FINDING")
-	print(module)
 	module(0).asInstanceOf[Module].body.asInstanceOf[Block].foreachStmt{
 		case DefWire(info, name, tpe) => {
 			if(name == target.name && tpe.isInstanceOf[UIntType]){
@@ -91,13 +80,12 @@ class FaultControllerInstrumentation() extends Transform {
 				return value.tpe.asInstanceOf[UIntType].width.asInstanceOf[IntWidth].width.toInt
 			
 		}
-		case other =>{println("OTHER"); println(other)}
+		case other =>{other}
 	}
 	throw new Exception(target + " not found")
 }
 
-  def add_stmts(modules: Seq[DefModule], target: ComponentName, width: Int): Seq[DefModule] = { // if mapport then print then return m will cause problems
-	//println("FIND")
+  def add_stmts(modules: Seq[DefModule], target: ComponentName, width: Int): Seq[DefModule] = { 
 	var module = modules.filter(_.name == target.module.name)(0)
 	var left_module = modules.filter(_.name != target.module.name)
 	var stmts = module.asInstanceOf[Module].body.asInstanceOf[Block].stmts
@@ -113,19 +101,15 @@ class FaultControllerInstrumentation() extends Transform {
 	stmts = stmts :+ Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "data_in", UnknownType, FEMALE), WSubIndex(WRef(target.name, UnknownType, ExpKind, MALE), 0, UnknownType, MALE))
 	}
 	
-	//WRef(target.name, UIntType(IntWidth(width)), ExpKind, MALE)
 	var block = Block(stmts)
 	module = module.asInstanceOf[Module].copy(body = block)
 	var ret = left_module :+ module
-	//println("RET")
 	ret
 }
 
   def execute(state: CircuitState): CircuitState = {
 	var annos = state.annotations.toList.filter(x => (x.isInstanceOf[FaultControllerUDAnnotation] || x.isInstanceOf[FaultInjectionAnnotation]))
 	val ret = state.copy(circuit = run(state.circuit, annos))
-	println("CTRL DONE")
-	println(ret)
 	ret
   }
 }
