@@ -27,7 +27,9 @@ class FaultControllerInstrumentation() extends Transform {
 	var faulty_width = 0
 	var data_target = ""
 	var number_of_fires = 0
+	var probabilistic = false
 	var affected_bits = List(1)
+	var probability = 0
 	annos.foreach{
 		case FaultControllerUDAnnotation(target, dtarget, nfires, abits) =>{
 			input_width = find_width(c.modules, target)
@@ -36,6 +38,15 @@ class FaultControllerInstrumentation() extends Transform {
 			affected_bits = abits
 			temp = add_stmts(temp, target, input_width)
 		}
+		case FaultControllerProbAnnotation(target, dtarget, nfires, prob) =>{
+			input_width = find_width(c.modules, target)
+			data_target = dtarget
+			number_of_fires = nfires
+			probability = prob
+			temp = add_stmts(temp, target, input_width)
+			probabilistic = true
+
+		}
 		case FaultInjectionAnnotation(target, id, injector) =>{
 			faulty_width = find_width(c.modules, target)
 		}
@@ -43,7 +54,7 @@ class FaultControllerInstrumentation() extends Transform {
 	if(input_width == 0){
 		return c
 	}
-	var elab = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new FaultController(input_width, data_target, number_of_fires, affected_bits, faulty_width)))
+	var elab = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new FaultController(input_width, data_target, number_of_fires, affected_bits, faulty_width, probability, probabilistic)))
 	elab = ToWorkingIR.run(elab)
 	temp = temp ++ elab.modules
 	val k = c.copy(modules = temp)

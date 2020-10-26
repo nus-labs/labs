@@ -27,7 +27,8 @@ class FaultControllerTransform extends Transform {
     	val myAnnos = state.annotations.collect { case a: ClockAnnotation => a 
 												  case b: ResetAnnotation => b
 												  case c: FaultControllerUDAnnotation => c
-												  case d: FaultInjectionAnnotation => d}
+												  case d: FaultInjectionAnnotation => d
+												  case e: FaultControllerProbAnnotation => e}
 		myAnnos match{
 			case Nil => state
 			case p =>

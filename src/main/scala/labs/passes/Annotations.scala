@@ -28,6 +28,10 @@ case class FaultControllerUDAnnotation(target: ComponentName, data_target: Strin
   def duplicate(x: ComponentName): FaultControllerUDAnnotation = this.copy(target = x)
 }
 
+case class FaultControllerProbAnnotation(target: ComponentName, data_target: String, number_of_fires: Int, probability: Int) extends SingleTargetAnnotation[ComponentName] {
+  def duplicate(x: ComponentName): FaultControllerProbAnnotation = this.copy(target = x)
+}
+
 case class ClockAnnotation(target: ComponentName) extends
     SingleTargetAnnotation[ComponentName] {
   def duplicate(x: ComponentName): ClockAnnotation = this.copy(target = x)

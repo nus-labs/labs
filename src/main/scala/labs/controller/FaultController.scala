@@ -3,7 +3,7 @@ package labs
 import chisel3._
 import chiffre._
 
-class FaultController(var input_width: Int, var datatarget: String, var number_of_fires: Int, var affected_bits: List[Int], var faulty_width: Int) extends Module with chiffre.ChiffreController {
+class FaultController(var input_width: Int, var datatarget: String, var number_of_fires: Int, var affected_bits: List[Int], var faulty_width: Int, var probability: Int, var probabilistic: Boolean) extends Module with chiffre.ChiffreController {
         lazy val scanId = "main"
         val io = IO(new Bundle{
                 val data_in = Input(UInt(input_width.W))
@@ -11,29 +11,12 @@ class FaultController(var input_width: Int, var datatarget: String, var number_o
 
 		val r = scala.util.Random
 
-	def rand( n:Int, limit:Int, size:Int) : String = { 
-		val arr = Seq("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
-  		val r = scala.util.Random
-		//val idx = r.nextInt(limit)
-		val idx = limit
-  		var out = "h_"
-  		for(i <- 0 to n - 1){
-			if( i >= size * idx & i < size * idx + size ){
-    			//out = out.concat(arr(r.nextInt(arr.length)))
-				out = out.concat("0")
-			}
-			else{
-				out = out.concat(arr(arr.length - 1))
-			}
-		}
-		return out
-	}
-
     def random_config( faulty_width: Int) : String = { // assume Lfsr16
 		val arr = Seq("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
 		val length = faulty_width * 2
 		var out = ""
 		val r = scala.util.Random
+		
 		for(i <- 0 to length - 1){
 			if(i % 2 == 0){ // difficulty
 				out = "7FFF" + out
@@ -51,6 +34,33 @@ class FaultController(var input_width: Int, var datatarget: String, var number_o
 		return out
 	}
 
+    def probabilistic_config(probability: Int) : String = { // assume Lfsr16
+		val arr = Seq("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
+		val length = faulty_width * 2
+		var out = ""
+		val r = scala.util.Random
+		val scaled_probability = 655.35 * probability
+		var scaled_probability_int = scaled_probability.toInt
+		println("%04X".format(scaled_probability_int))
+		for(i <- 0 to length - 1){
+			if(i % 2 == 0){ // difficulty
+				var hex_value = "%04X".format(scaled_probability_int)
+				out = hex_value + out
+			}
+			else{ // seed
+				var seed = ""
+				for(j <- 0 to 3){
+					val randnumber = r.nextInt(16)
+					seed = seed + arr(randnumber)
+				}
+				out = seed + out
+			}
+		}
+		out = "h_" + out
+		return out
+	}
+
+
 	def choose_bit( affected_bits: List[Int], width:Int ) : String = {
 		var out = ""
 		for(i <- 0 to width - 1){
@@ -65,12 +75,11 @@ class FaultController(var input_width: Int, var datatarget: String, var number_o
 		return out	
 	}
 	val resetB = ~reset.asBool
-	
 	val lfsr_length = 16
 	val condition = "h_80001b70".U
 
-  	val datalength = if (affected_bits.size != 0) faulty_width else faulty_width * 2 * 16
-	val configuration = if (affected_bits.size != 0) choose_bit( affected_bits, faulty_width ).U else random_config(faulty_width).U     
+  	val datalength = if(probabilistic) faulty_width * 2 * 16 else if (affected_bits.size != 0) faulty_width else faulty_width * 2 * 16
+	val configuration = if(probabilistic) probabilistic_config(probability).U else if (affected_bits.size != 0) choose_bit( affected_bits, faulty_width ).U else random_config(faulty_width).U     
 
     // put logics here
 
