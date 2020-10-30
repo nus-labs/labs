@@ -1,4 +1,0 @@
-[0m[[0m[33mwarn[0m] [0m[0m/home/game11189/LABS-individual/labs/src/main/scala/labs/passes/FaultControllerTransform.scala:23:2: object ResolveGenders in package passes is deprecated (since 1.2): Use 'ResolveFlows'. This will be removed in 1.3[0m
-[0m[[0m[33mwarn[0m] [0m[0m	ResolveGenders[0m
-[0m[[0m[33mwarn[0m] [0m[0m	^[0m
-[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
