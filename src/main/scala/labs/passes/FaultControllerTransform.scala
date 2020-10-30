@@ -38,8 +38,9 @@ class FaultControllerTransform extends Transform {
 		  case ResetAnnotation(c) => comp("ResetAnnotation") = comp.getOrElse(name, Seq.empty) :+ (c)
 		  case other => other
 			}
+		
         transforms(comp.toMap).foldLeft(state)((old, x) => x.runTransform(old))
-          .copy(annotations = (state.annotations.toSet -- myAnnos.toSet).toSeq)
+          .copy(annotations = (state.annotations.toSet).toSeq)
 		}
   }
 }

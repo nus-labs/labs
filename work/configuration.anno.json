@@ -21,11 +21,11 @@
     "id":"main"
   },
   {
-    "class":"labs.passes.FaultControllerUDAnnotation",
+    "class":"labs.passes.FaultControllerProbAnnotation",
 	"target":"aes.aes_encipher_block.round_ctr_reg",
 	"data_target":"h_a",
 	"number_of_fires": 1,
-	"affected_bits": [1]
+	"probability": 60
   },
   {
     "class":"labs.passes.FaultTolerantTMRAnnotation",

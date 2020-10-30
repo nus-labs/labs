@@ -30,6 +30,7 @@ class FaultControllerInstrumentation() extends Transform {
 	var probabilistic = false
 	var affected_bits = List(1)
 	var probability = 0
+	println(annos)
 	annos.foreach{
 		case FaultControllerUDAnnotation(target, dtarget, nfires, abits) =>{
 			input_width = find_width(c.modules, target)
@@ -39,6 +40,7 @@ class FaultControllerInstrumentation() extends Transform {
 			temp = add_stmts(temp, target, input_width)
 		}
 		case FaultControllerProbAnnotation(target, dtarget, nfires, prob) =>{
+			println("HERE3")
 			input_width = find_width(c.modules, target)
 			data_target = dtarget
 			number_of_fires = nfires
@@ -52,8 +54,10 @@ class FaultControllerInstrumentation() extends Transform {
 		}
 	}
 	if(input_width == 0){
+		println("HERE")
 		return c
 	}
+	println("HERE2")
 	var elab = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new FaultController(input_width, data_target, number_of_fires, affected_bits, faulty_width, probability, probabilistic)))
 	elab = ToWorkingIR.run(elab)
 	temp = temp ++ elab.modules
