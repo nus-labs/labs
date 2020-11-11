@@ -32,8 +32,8 @@ class FaultTolerantTransform extends Transform {
 			case p =>
         val comp = mutable.HashMap[String, Seq[ComponentName]]()
         p.foreach {
-          case ClockAnnotation(c) => comp("ClockAnnotation") = comp.getOrElse(name, Seq.empty) :+ (c) 
-		  case ResetAnnotation(c) => comp("ResetAnnotation") = comp.getOrElse(name, Seq.empty) :+ (c)
+          //case ClockAnnotation(c) => comp("ClockAnnotation") = comp.getOrElse(name, Seq.empty) :+ (c) 
+		  //case ResetAnnotation(c) => comp("ResetAnnotation") = comp.getOrElse(name, Seq.empty) :+ (c)
 		  case other => other
 			}
         transforms(comp.toMap).foldLeft(state)((old, x) => x.runTransform(old))

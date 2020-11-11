@@ -13,7 +13,7 @@ import scala.language.existentials
 class FaultControllerTransform extends Transform {
   def inputForm: CircuitForm = HighForm
   def outputForm: CircuitForm = HighForm
-  def transforms(compMap: Map[String, Seq[ComponentName]]): Seq[Transform] = Seq(
+  def transforms(): Seq[Transform] = Seq(
 	new CompatibilityPass,
 	new FaultControllerInstrumentation,
 	InferTypes,
@@ -24,23 +24,6 @@ class FaultControllerTransform extends Transform {
  )
 
   def execute(state: CircuitState): CircuitState = {
-    	val myAnnos = state.annotations.collect { case a: ClockAnnotation => a 
-												  case b: ResetAnnotation => b
-												  case c: FaultControllerUDAnnotation => c
-												  case d: FaultInjectionAnnotation => d
-												  case e: FaultControllerProbAnnotation => e}
-		myAnnos match{
-			case Nil => state
-			case p =>
-        val comp = mutable.HashMap[String, Seq[ComponentName]]()
-        p.foreach {
-          case ClockAnnotation(c) => comp("ClockAnnotation") = comp.getOrElse(name, Seq.empty) :+ (c) 
-		  case ResetAnnotation(c) => comp("ResetAnnotation") = comp.getOrElse(name, Seq.empty) :+ (c)
-		  case other => other
-			}
-		
-        transforms(comp.toMap).foldLeft(state)((old, x) => x.runTransform(old))
-          .copy(annotations = (state.annotations.toSet).toSeq)
-		}
+        transforms.foldLeft(state)((old, x) => x.runTransform(old))
   }
 }

@@ -41,7 +41,6 @@ class FaultController(var input_width: Int, var datatarget: String, var number_o
 		val r = scala.util.Random
 		val scaled_probability = 655.35 * probability
 		var scaled_probability_int = scaled_probability.toInt
-		println("%04X".format(scaled_probability_int))
 		for(i <- 0 to length - 1){
 			if(i % 2 == 0){ // difficulty
 				var hex_value = "%04X".format(scaled_probability_int)

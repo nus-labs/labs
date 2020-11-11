@@ -1,11 +1,11 @@
 [
   {
     "class":"labs.passes.ClockAnnotation",
-    "target":"dummy.dummy.clk"
+    "target":"None.None.clk"
   },
   {
     "class":"labs.passes.ResetAnnotation",
-    "target":"dummy.dummy.reset_n"
+    "target":"None.None.reset_n"
   },
   {
     "class":"chiffre.passes.FaultInjectionAnnotation",
@@ -21,11 +21,11 @@
     "id":"main"
   },
   {
-    "class":"labs.passes.FaultControllerProbAnnotation",
+    "class":"labs.passes.FaultControllerUDAnnotation",
 	"target":"aes.aes_encipher_block.round_ctr_reg",
 	"data_target":"h_a",
 	"number_of_fires": 1,
-	"probability": 60
+	"affected_bits": [1]
   },
   {
     "class":"labs.passes.FaultTolerantTMRAnnotation",
