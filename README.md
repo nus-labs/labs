@@ -1,5 +1,7 @@
 # Laser Attack Benchmark Suite (LABS) (Alpha)
 
+The official website of the Laser Attack Benchmark Suite can be found in this website [https://nus-labs.github.io/](https://nus-labs.github.io/).
+
 ## Integrate hardware-based redundancy
 
 ```code
