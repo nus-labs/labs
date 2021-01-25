@@ -1,4 +1,3 @@
-// See LICENSE.txt for license details.
 package labs
 
 import chisel3._

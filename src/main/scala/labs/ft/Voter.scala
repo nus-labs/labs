@@ -1,13 +1,8 @@
-// See LICENSE.txt for license details.
 package labs
 
 import chisel3._
 import chiffre._
 import java.io.File
-
-object MUXDriver extends App {
-	chisel3.Driver.execute(args, () => new Voter(2))
-}
 
 sealed class VoterIo(val bitWidth: Int) extends Bundle{
 	val in1 = Input(UInt(bitWidth.W))

@@ -1,15 +1,8 @@
-// See LICENSE.txt for license details.
 package labs
 
 import chisel3._
 import chiffre._
 import java.io.File
-
-object OutputRegDriver extends App {
-  val f = new File("OutputReg.fir")
-  chisel3.Driver.dumpFirrtl(chisel3.Driver.elaborate(() => new OutputReg(4)), Option(f))
-  chisel3.Driver.execute(args, () => new OutputReg(4))
-}
 
 sealed class OutputRegIo(bitwidth: Int) extends Bundle{
 	val in = Input(UInt(bitwidth.W))
