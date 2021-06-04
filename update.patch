@@ -1,6 +1,6 @@
-diff -ruN src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala /home/game11189/LABS-individual/labs/src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala
---- src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala	2021-06-04 21:03:32.732088258 +0800
-+++ /home/game11189/LABS-individual/labs/src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala	2021-06-04 21:01:36.950519876 +0800
+diff -ruN a/src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala b//src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala
+--- a/src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala	2021-06-04 21:03:32.732088258 +0800
++++ ./src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala	2021-06-04 21:01:36.950519876 +0800
 @@ -75,7 +75,7 @@
  
    val io = IO(new PrngIo(n))
@@ -10,9 +10,9 @@ diff -ruN src/main/scala/perfect/src/main/scala/perfect/random/Lfsr.scala /home/
    shiftReg.zipWithIndex.map {case (x, i) => { x := shiftReg((i + 1) % n) } }
    LfsrTaps(n) map (x => { shiftReg(x - 1) := shiftReg(0) ^ shiftReg(x) })
  
-diff -ruN src/main/scala/perfect/src/main/scala/perfect/util/NoDedup.scala /home/game11189/LABS-individual/labs/src/main/scala/perfect/src/main/scala/perfect/util/NoDedup.scala
---- src/main/scala/perfect/src/main/scala/perfect/util/NoDedup.scala	2021-06-04 21:03:32.732088258 +0800
-+++ /home/game11189/LABS-individual/labs/src/main/scala/perfect/src/main/scala/perfect/util/NoDedup.scala	2021-06-04 21:02:11.579011696 +0800
+diff -ruN a/src/main/scala/perfect/src/main/scala/perfect/util/NoDedup.scala ./src/main/scala/perfect/src/main/scala/perfect/util/NoDedup.scala
+--- a/src/main/scala/perfect/src/main/scala/perfect/util/NoDedup.scala	2021-06-04 21:03:32.732088258 +0800
++++ ./src/main/scala/perfect/src/main/scala/perfect/util/NoDedup.scala	2021-06-04 21:02:11.579011696 +0800
 @@ -15,11 +15,13 @@
  package util
  
