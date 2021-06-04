@@ -6,6 +6,14 @@ We propose the Laser Attack Benchmark Suite (LABS) that tries to complete the se
 
 The official website of the Laser Attack Benchmark Suite can be found in this website [https://nus-labs.github.io/](https://nus-labs.github.io/).
 
+## Getting Started
+LABS requires sbt installed.
+```
+git clone https://github.com/nus-labs/labs
+cd labs
+git submodule update --init
+```
+
 ## Configuration
 
 ### ClockAnnotation & ResetAnnotation
@@ -71,8 +79,8 @@ FaultControllerAnnotation is used to configure the fault controller. The target 
 {
     "class":"labs.passes.FaultTolerantTemporalAnnotation",
     "target":"aes.aes_encipher_block.None"
-	"ready_signal":"ready"
-	"start_signal":"next"
+    "ready_signal":"ready"
+    "start_signal":"next"
 }
 ```
 FaultTolerantAnnotation is used to integrate a fault-tolerant technique to the target design. Different annotations FaultTolerant<DMR/TMR/Temporal>Annotations are used to integrate double modular, triple modular and temporal redundancy respectively. The FaultTolerantTemporalAnnotation requires the user to indicate a ready signal when a computation is done and a start signal to start a computation.
@@ -98,6 +106,6 @@ sbt "runMain firrtl.stage.FirrtlMain -i <your_file_name>.fir -X verilog --custom
 
 ```code
 cd labs
-sbt "runMain firrtl.stage.FirrtlMain -i <your_file_name>.fir -X <low, verilog> -- custom-transforms labs.passes.FaultTolerantTransform -faf work/configuration.anno.json"
+sbt "runMain firrtl.stage.FirrtlMain -i <your_file_name>.fir -X <low, verilog> --custom-transforms labs.passes.FaultTolerantTransform -faf work/configuration.anno.json"
 ```
 
