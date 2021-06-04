@@ -103,6 +103,8 @@ cd labs
 sbt "runMain firrtl.stage.FirrtlMain -i <your_file_name>.fir -X verilog --custom-transforms chiffre.passes.FaultInstrumentationTransform -faf work/configuration.anno.json"
 ```
 
+After adding a fault injector, the resulting Verilog test design will be generated (due to -X verilog). The test design can be run on the same testbench that the user has to evaluate how faults affect the design.
+
 ## Integrate hardware-based redundancy
 
 ```code
