@@ -59,13 +59,26 @@ FaultControllerAnnotation is used to configure the fault controller. The target 
 ### FaultTolerantAnnotation
 ```code8
 {
+    "class":"labs.passes.FaultTolerantDMRAnnotation",
+    "target":"aes.aes_encipher_block.None"
+}
+
+{
     "class":"labs.passes.FaultTolerantTMRAnnotation",
     "target":"aes.aes_encipher_block.None"
 }
+
+{
+    "class":"labs.passes.FaultTolerantTemporalAnnotation",
+    "target":"aes.aes_encipher_block.None"
+	"ready_signal":"ready"
+	"start_signal":"next"
+}
 ```
-FaultTolerantAnnotation is used to integrate a fault-tolerant technique to the target design. Different annotations are used to integrate different techniques (TODO describe all of them).
+FaultTolerantAnnotation is used to integrate a fault-tolerant technique to the target design. Different annotations FaultTolerant<DMR/TMR/Temporal>Annotations are used to integrate double modular, triple modular and temporal redundancy respectively. The FaultTolerantTemporalAnnotation requires the user to indicate a ready signal when a computation is done and a start signal to start a computation.
 
 ## Integrate fault injection components to a design
+To inject faults to a design, a fault injector and fault controller are required. The commands below are used to insert each of the components. 
 
 ### Add a controller
 
