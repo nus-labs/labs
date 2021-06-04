@@ -5,12 +5,6 @@ import chiffre._
 import chisel3.dontTouch
 import java.io.File
 
-object CtrlRegDriver extends App {
-  val f = new File("CtrlReg.fir")
-  chisel3.Driver.dumpFirrtl(chisel3.Driver.elaborate(() => new CtrlReg()), Option(f))
-  chisel3.Driver.execute(args, () => new CtrlReg())
-}
-
 sealed class CtrlRegIo extends Bundle{
 	val ready = Input(Bool())
 	val start = Input(Bool())
