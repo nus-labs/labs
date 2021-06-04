@@ -12,6 +12,7 @@ LABS requires sbt installed.
 git clone https://github.com/nus-labs/labs
 cd labs
 git submodule update --init
+patch -p0 -i update.patch
 ```
 
 ## Configuration
