@@ -11,3 +11,6 @@
 [submodule "iverilog"]
 	path = iverilog
 	url = https://github.com/steveicarus/iverilog
+[submodule "aes"]
+    path = work/aes
+    url = https://github.com/secworks/aes
