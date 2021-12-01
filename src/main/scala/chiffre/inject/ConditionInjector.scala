@@ -1,36 +1,23 @@
-// Copyright 2018 IBM
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 package chiffre.inject
 
 import chisel3._
 import chiffre.ChiffreInjector
-
 import chiffre.{InjectorInfo, ScanField, HasWidth}
+import labs.passes._
 
 case class condition(width: Int) extends ScanField
-//case class conditionInject(width: Int) extends ScanField
 
 case class ConditionInjectorInfo(bitWidth: Int) extends InjectorInfo {
   val fields = Seq(condition(bitWidth))
 }
 
 class ConditionInjector(bitWidth: Int, faultType: String) extends Injector(bitWidth){
-  val resetB = ~reset.toBool
+  val resetB = if(global_edge_reset.posedge_reset == 0) ~reset.toBool else reset.toBool
   lazy val info = ConditionInjectorInfo(bitWidth)
 
   val flipMask = Reg(UInt(bitWidth.W))
  
+  withReset(resetB){
   val fire = enabled & ~io.scan.clk
   if(faultType == "bit-set")
   	io.out := Mux(fire, io.in | flipMask, io.in)
@@ -49,6 +36,7 @@ class ConditionInjector(bitWidth: Int, faultType: String) extends Injector(bitWi
            |[info]   - input: 0x%x
            |[info]   - output: 0x%x
                |""".stripMargin, flipMask, io.in, io.out)
+  }
   }
 }
 

@@ -32,12 +32,13 @@ scalaVersion := "2.12.4"
 crossScalaVersions := Seq("2.11.12", "2.12.4")
 libraryDependencies += "com.github.scopt" %% "scopt" % "3.6.0"
 libraryDependencies += "org.json4s" %% "json4s-native" % "3.5.3"
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
 
 Compile / unmanagedSourceDirectories += baseDirectory.value / "firrtl/src"
 
 val defaultVersions = Map("chisel3" -> "3.2.7",
                           "chisel-iotesters" -> "1.2.+",
-                          "firrtl"  -> "1.2.+" )
+                          "firrtl"  -> "1.2.8" )
 
 libraryDependencies ++= defaultVersions.map{ case (k, v) =>
   "edu.berkeley.cs" %% k % sys.props.getOrElse(k + "Version", v) }.toSeq

@@ -2,10 +2,7 @@ import time
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-
-correct_ciphertext = "3a d7 7b b4 0d 7a 36 60 a8 9e ca f3 24 66 ef 97".split()
-expected_m9 = "bb 33 11 c4 88 e7 82 eb a4 f1 c7 49 74 36 4d 2e".split() # expected_m9 = shiftrow(m9)!!!
-f = open("./output.txt", "r")
+import sys
 
 def index_xored_ciphertext(xored_ciphertext):
     idx = 0
@@ -38,6 +35,11 @@ def find_m9_left(candidates, idx):
         score[idx] = 1
     return sum(score)
 
+start = time.time()
+# Please change these two based on your input
+correct_ciphertext = "3a d7 7b b4 0d 7a 36 60 a8 9e ca f3 24 66 ef 97".split()
+expected_m9 = "bb 33 11 c4 88 e7 82 eb a4 f1 c7 49 74 36 4d 2e".split() # expected_m9 = shiftrow(m9)!!!
+
 SBOX = \
     [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
     0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
@@ -58,6 +60,7 @@ SBOX = \
 
 score = [1] * 16
 
+f = open(sys.argv[1], "r")
 faulty_ciphertext = []
 for i in f:
     string = ""
@@ -98,6 +101,7 @@ for i in xored_ciphertext:
 
 fig, ax = plt.subplots()
 x = list(range(len(score_for_each_ciphertext)))
+print(x)
 plt.grid()
 plt.gca().xaxis.set_major_locator(mticker.MultipleLocator(1))
 plt.xlim(0, len(score_for_each_ciphertext))
@@ -113,3 +117,4 @@ ax.set_xlabel('Number of Experiments', fontsize=32)
 ax.grid(False)
 ax.tick_params(labelsize=26)
 ax.plot(x, score_for_each_ciphertext, color="black", linewidth=4)
+plt.savefig('result.png')

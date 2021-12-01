@@ -15,7 +15,7 @@ package chiffre.inject
 
 import chisel3._
 import chiffre.ChiffreInjector
-
+import labs.passes._
 import chiffre.{ScanField, InjectorInfo, ProbabilityBind}
 
 case class Seed(width: Int) extends ScanField
@@ -26,9 +26,12 @@ case class LfsrInjectorInfo(bitWidth: Int, lfsrWidth: Int) extends InjectorInfo 
 }
 
 sealed class LfsrInjector(val lfsrWidth: Int, val faultType: String) extends Injector(1) {
+  lazy val info = LfsrInjectorInfo(1, lfsrWidth)
+  val resetB = if(global_edge_reset.posedge_reset == 0) ~reset.toBool else reset.toBool
+  withReset(resetB){
+
   val difficulty = RegInit(0.U(lfsrWidth.W))
   val seed = RegInit(1.U(lfsrWidth.W))
-  lazy val info = LfsrInjectorInfo(1, lfsrWidth)
 
   val lfsr = Module(new perfect.random.Lfsr(lfsrWidth))
   lfsr.io.seed.valid := io.scan.en
@@ -59,7 +62,7 @@ sealed class LfsrInjector(val lfsrWidth: Int, val faultType: String) extends Inj
 	       |[info]   - output: 0x%x
                |""".stripMargin, seed, difficulty, io.in, io.out)
   }
-
+  }
 }
 
 class LfsrInjectorN(bitWidth: Int, val lfsrWidth: Int, val scanId: String, val faultType: String) extends

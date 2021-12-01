@@ -18,16 +18,17 @@ import scala.collection.mutable.ArrayBuffer
 import java.io.File
 
 class TMR {
-  def run(c: Circuit, component: ComponentName): Circuit ={
+  def run(c: Circuit, component: ComponentName, feedback: Int): Circuit ={
 	var modules = c.modules
-	modules = modules.map(splitM(_,component))
+	modules = modules.map(traverseM(_, component, feedback))
 	var k = c.copy(modules=modules)
 	var size_lst = ArrayBuffer[Int]()
 	output_size.arr.foreach{
-		case UIntType(width) => { // Can rely on ordering from set?
+		case (UIntType(width), whether_add_feedback) => { // Can rely on ordering from set?
 			var bitwidth = width.asInstanceOf[IntWidth].width.toInt
 			if(!size_lst.contains(bitwidth)){
-				k = add_modules(k, bitwidth)
+				val feedback_determined = if (whether_add_feedback) feedback else 0
+				k = add_modules(k, bitwidth, feedback_determined)
 				size_lst = size_lst :+ bitwidth
 			}
 		}
@@ -37,27 +38,14 @@ class TMR {
 	k.copy(modules=new_modules)
 }
 
-  def remove_dup_modules(modules: Seq[DefModule]): Seq[DefModule] = {
-	var module_names: Set[String] = Set()
-	var new_modules: Seq[DefModule] = Seq()
-	modules.foreach{
-		module => {
-			if (!module_names.contains(module.asInstanceOf[Module].name)){
-				module_names = module_names + module.asInstanceOf[Module].name
-				new_modules = new_modules :+ module
-			}
-		}
-	}
-	return new_modules
-  }
-
-  def add_modules(k: Circuit, bitwidth: Int): Circuit = {
-	var design = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new Voter(bitwidth))) 	
+  def add_modules(k: Circuit, bitwidth: Int, feedback: Int): Circuit = {
+	var design = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new Voter(bitwidth, feedback))) 	
 	var modules = Seq[DefModule]()
 	var module = design.modules.filter(_.asInstanceOf[Module].name == "Voter").last
-	var new_name = module.asInstanceOf[Module].name + bitwidth.toString
+	var new_name = module.asInstanceOf[Module].name + bitwidth.toString + "_" + feedback.toString
 	module = module.asInstanceOf[Module].copy(name=new_name)
-	modules = design.modules.filter(_.asInstanceOf[Module].name != "Voter") :+ module.asInstanceOf[Module]	
+	modules = design.modules.filter(_.asInstanceOf[Module].name != "Voter") :+ module.asInstanceOf[Module]
+	
 	design = design.copy(modules=modules)
 	design = ToWorkingIR.run(design)
 	var kk = k.copy(modules = k.modules ++ design.modules)
@@ -77,11 +65,10 @@ class TMR {
 	}
 	else{
 		return false
-		//throw new Exception(expr.getClass + " not yet implemented")
 	}
   }
 
-  def splitM(m: DefModule, component: ComponentName): DefModule = { 
+  def traverseM(m: DefModule, component: ComponentName, feedback: Int): DefModule = { 
 	if( component.module.name == m.name ){
 		var input_lst = List[(String, Type)]()
 		var output_lst = List[(String, Type)]()
@@ -90,23 +77,20 @@ class TMR {
 			case Port(_, name, Output, tpe) => output_lst = output_lst :+ (name, tpe)
 		}
 		if( component.name == "None" ){
-			var mm = m.mapStmt(copyComponents(_, input_lst, output_lst)).asInstanceOf[Module] // expect Block
+			var mm = m.mapStmt(copyComponents(_, input_lst, output_lst, feedback)).asInstanceOf[Module]
 			return mm
 		}
 		else{
 			var m_stmts = m.asInstanceOf[Module].body.asInstanceOf[Block].stmts
-			println(component.name)
 			var input_stmt: Connect = null
 			var output_stmt: Connect = null
 			m_stmts.foreach{
 				case Connect(info, ref1, ref2) =>{
 					if(is_input_output(ref1, component.name)){
 						input_stmt = Connect(info, ref1, ref2)
-						println(input_stmt)
 					}
 					if(is_input_output(ref2, component.name)){
 						output_stmt = Connect(info, ref1, ref2)
-						println(output_stmt)
 					}
 				}
 				case other => other
@@ -114,8 +98,8 @@ class TMR {
 			if(input_stmt == null) throw new Exception("The input port is not found")
 			if(output_stmt == null) throw new Exception("The output port is not found")
 
-			var mm = add_component(m.asInstanceOf[Module], component, input_stmt.expr, output_stmt.loc)
-			
+			var mm = add_component(m.asInstanceOf[Module], component, input_stmt.expr, output_stmt.loc, feedback)
+			mm.body.asInstanceOf[Block].stmts.foreach(x => {println(x.serialize)})
 			return mm
 		}
 	}
@@ -124,30 +108,39 @@ class TMR {
 	}
   }
 
-  def newNameS(name: String, i: Int): String = name + "_ft" + i.toString
-
-  def newNameT(name: String): String = if (name != "clock" && name != "reset") name + "_temporal" else name
-
-  def add_component(m: Module, component: ComponentName, input_data: Expression, output_data: Expression): Module = {
+  def add_component(m: Module, component: ComponentName, input_data: Expression, output_data: Expression, feedback: Int): Module = {
 	var name = component.name
 	var stmts = m.asInstanceOf[Module].body.asInstanceOf[Block].stmts.asInstanceOf[ArrayBuffer[Statement]]
 	var allregs = stmts.filter(_.isInstanceOf[DefRegister])
-	var allwire = stmts.filter(_.isInstanceOf[DefWire])
-	
-	var reg = allregs.filter(_.asInstanceOf[DefRegister].name == component.name).last.asInstanceOf[DefRegister]
-	var added_reg = reg.copy(name = newNameS(reg.name, 0))
-	var added_reg2 = reg.copy(name = newNameS(reg.name, 1))
+	var allwires = stmts.filter(_.isInstanceOf[DefWire])
+    var allregs_names = allregs.map(_.asInstanceOf[DefRegister].name)
+    var allwires_names = allwires.map(_.asInstanceOf[DefWire].name)
+    var target_component = stmts(0) // just to initialise
+	if(allregs_names.contains(component.name)){	
+		var reg = allregs.filter(_.asInstanceOf[DefRegister].name == component.name).last.asInstanceOf[DefRegister]
+		var added_reg = reg.copy(name = newNameS(reg.name, 0))
+		var added_reg2 = reg.copy(name = newNameS(reg.name, 1))
+		var reg_instance = WRef(newNameS(component.name, 0), reg.tpe, ExpKind, UNKNOWNGENDER)
+		var reg_instance2 = WRef(newNameS(component.name, 1), reg.tpe, ExpKind, UNKNOWNGENDER)
+		var input_reg_instance = Connect(NoInfo, reg_instance, input_data)
+		var input_reg_instance2 = Connect(NoInfo, reg_instance2, input_data)
+		stmts = stmts :+ added_reg :+ added_reg2 :+ input_reg_instance :+ input_reg_instance2
+		stmts = add_voter_component(stmts, component.name, reg.tpe, output_data, feedback)
+		output_size.arr += ((reg.tpe, true))
+	}
+	else if (allwires_names.contains(component.name)){
+        var wire = allwires.filter(_.asInstanceOf[DefRegister].name == component.name).last.asInstanceOf[DefWire]
+        var added_wire = wire.copy(name = newNameS(wire.name, 0))
+        var added_wire2 = wire.copy(name = newNameS(wire.name, 1))
+        var wire_instance = WRef(newNameS(component.name, 0), wire.tpe, ExpKind, UNKNOWNGENDER)
+        var wire_instance2 = WRef(newNameS(component.name, 1), wire.tpe, ExpKind, UNKNOWNGENDER)
+        var input_wire_instance = Connect(NoInfo, wire_instance, input_data)
+        var input_wire_instance2 = Connect(NoInfo, wire_instance2, input_data)
+        stmts = stmts :+ added_wire :+ added_wire2 :+ input_wire_instance :+ input_wire_instance2
+        stmts = add_voter_component(stmts, component.name, wire.tpe, output_data, feedback)
+        output_size.arr += ((wire.tpe, true))
 
-	// add inputs
-	var reg_instance = WRef(newNameS(component.name, 0), reg.tpe, ExpKind, UNKNOWNGENDER)
-	var reg_instance2 = WRef(newNameS(component.name, 1), reg.tpe, ExpKind, UNKNOWNGENDER)
-	var input_reg_instance = Connect(NoInfo, reg_instance, input_data)
-	var input_reg_instance2 = Connect(NoInfo, reg_instance2, input_data)
-
-	stmts = stmts :+ added_reg :+ added_reg2 :+ input_reg_instance :+ input_reg_instance2
-
-	stmts = add_voter_component(stmts, component.name, reg.tpe, output_data)
-	output_size.arr += reg.tpe
+	}
 	var mm = m.asInstanceOf[Module].copy(body = Block(stmts))
 	mm
   }
@@ -168,20 +161,7 @@ class TMR {
 	
   }
 
-  def getName(ref: Expression): String = ref.serialize
-
-  def add_output_relationship(feed_to_output_map: scala.collection.mutable.Map[String, ArrayBuffer[Expression]], ref1: String, ref2: Expression, ref2_ft: Expression): scala.collection.mutable.Map[String, ArrayBuffer[Expression]] = {
-	if (feed_to_output_map.contains(ref1)) feed_to_output_map(ref1) += ref2_ft
-	else feed_to_output_map += ref1 -> ArrayBuffer(ref2, ref2_ft)
-	feed_to_output_map
-  }
-
-  def add_input_relationship(from_input_map: scala.collection.mutable.Map[Expression, Expression], ref1: Expression, ref2: Expression): scala.collection.mutable.Map[Expression, Expression] = {
-	from_input_map += ref2 -> ref1
-	from_input_map
-  }
-
-  def copyComponents(components: Statement, input_lst: List[(String, Type)], output_lst: List[(String, Type)]): Statement = {
+  def copyComponents(components: Statement, input_lst: List[(String, Type)], output_lst: List[(String, Type)], feedback: Int): Statement = {
 	var temp_block : Block = components.asInstanceOf[Block]
 	var added_stmts = ArrayBuffer[Statement]()
 	var temp = ArrayBuffer[Statement]()
@@ -205,7 +185,7 @@ class TMR {
 		}
 		case DefNode(info, ref1, ref2) => { // ref1 is a string
 			val ref1_ft = if (io_lst.contains(ref1)) ref1 else newNameS(ref1, i)
-			if(ref2.isInstanceOf[Reference] || ref2.isInstanceOf[DoPrim] || ref2.isInstanceOf[Mux]){
+			if(ref2.isInstanceOf[WRef] || ref2.isInstanceOf[DoPrim] || ref2.isInstanceOf[Mux] || ref2.isInstanceOf[WSubField]){
 				val ref2_ft = transform_expr(ref2, io_lst, i)
 				if(output_lst.map(_._1).contains(ref1)){
 					feed_to_output_map = add_output_relationship(feed_to_output_map, ref1, ref2, ref2_ft)
@@ -222,7 +202,7 @@ class TMR {
 			val ref1_name = getName(ref1)
 			val ref1_ft = transform_expr(ref1, io_lst, i)
 
-			if(ref2.isInstanceOf[Reference] || ref2.isInstanceOf[WRef] || ref2.isInstanceOf[DoPrim] || ref2.isInstanceOf[Mux] || ref2.isInstanceOf[WSubField]){
+			if(ref2.isInstanceOf[WRef] || ref2.isInstanceOf[DoPrim] || ref2.isInstanceOf[Mux] || ref2.isInstanceOf[WSubField]){
 				val ref2_ft = transform_expr(ref2, io_lst, i)
 				if(output_lst.map(_._1).contains(ref1_name)){
 					feed_to_output_map = add_output_relationship(feed_to_output_map, ref1_name, ref2, ref2_ft)
@@ -234,8 +214,7 @@ class TMR {
 			}
 			else if(ref2.isInstanceOf[UIntLiteral]){
 				if(!output_lst.map(_._1).contains(ref1_name)) added_stmts += Connect(info, ref1_ft, ref2)
-				// must check
-				else throw new Exception("Something Weird")
+				else throw new Exception("This should not be executed!")
 			}
 			else{
 				throw new Exception(ref2.getClass + " not yet implemented")
@@ -254,15 +233,14 @@ class TMR {
 	}
 	}
 
-	added_stmts = add_voter(added_stmts, feed_to_output_map)	
+	added_stmts = add_voter(added_stmts, feed_to_output_map, feedback)	
 	var all_detect_signals: ArrayBuffer[Expression] = ArrayBuffer()
 	added_stmts = (temp_block.stmts.toBuffer ++ added_stmts).asInstanceOf[ArrayBuffer[Statement]]
 	added_stmts = added_stmts -- del_lst
-	added_stmts.foreach(_.serialize)
 	temp_block.copy(stmts=added_stmts)
   }
 
-  def add_voter_component(added_stmts: ArrayBuffer[Statement], componentName: String, tpe:Type,  output_data: Expression): ArrayBuffer[Statement] = {
+  def add_voter_component(added_stmts: ArrayBuffer[Statement], componentName: String, tpe:Type,  output_data: Expression, feedback: Int): ArrayBuffer[Statement] = {
 	var count = 0
 	var voter_count = 0
 	var new_stmts = added_stmts
@@ -278,7 +256,7 @@ class TMR {
 	val ports = ArrayBuffer(Field("clock", Flip, ClockType), Field("reset", Flip, UIntType(IntWidth(1))), Field("io", Default, BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("in3", Flip, size), Field("out", Default, size)))))
 	val wref = WRef(name, BundleType(ports), ExpKind, UNKNOWNGENDER)
 	val inside_io = BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("in3", Flip, size), Field("out", Default, size)))
-	new_stmts += WDefInstance(NoInfo, name, "Voter" + bitwidth.toString, UnknownType)
+	new_stmts += WDefInstance(NoInfo, name, "Voter" + bitwidth.toString + "_" + feedback.toString, UnknownType)
 	new_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in1", size, FEMALE), reg_ori_instance)
 	new_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in2", size, FEMALE), reg_instance)
 	new_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in3", size, FEMALE), reg_instance2)
@@ -290,10 +268,11 @@ class TMR {
   }
 
 
-  def add_voter(added_stmts: ArrayBuffer[Statement], feed_to_output_map: scala.collection.mutable.Map[String, ArrayBuffer[Expression]]): ArrayBuffer[Statement] = {
+  def add_voter(added_stmts: ArrayBuffer[Statement], feed_to_output_map: scala.collection.mutable.Map[String, ArrayBuffer[Expression]], feedback: Int): ArrayBuffer[Statement] = {
 	var count = 0
 	var voter_count = 0
 	var all_detect_signals = ArrayBuffer[Expression]()
+	print(feed_to_output_map)
 	feed_to_output_map.foreach{
 		mapping =>{
 			val name = "v" + count.toString
@@ -304,15 +283,15 @@ class TMR {
 			val ports = ArrayBuffer(Field("clock", Flip, ClockType), Field("reset", Flip, UIntType(IntWidth(1))), Field("io", Default, BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("in3", Flip, size), Field("out", Default, size)))))
 			val inside_io = BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("in3", Flip, size), Field("out", Default, size)))
 			val wref = WRef(name, BundleType(ports), ExpKind, UNKNOWNGENDER)
-			added_stmts += WDefInstance(NoInfo, name, "Voter" + bitwidth.toString, UnknownType)
+			added_stmts += WDefInstance(NoInfo, name, "Voter" + bitwidth.toString + "_" + feedback.toString, UnknownType)
 			added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in1", size, FEMALE), feed_to_output(0))
 			added_stmts += 	Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in2", size, FEMALE), feed_to_output(1))
 			added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in3", size, FEMALE), feed_to_output(2))
 			added_stmts += Connect(NoInfo, WSubField(wref, "clock", ClockType, FEMALE), WRef("clock", ClockType, ExpKind, MALE))
 			added_stmts += Connect(NoInfo, WSubField(wref, "reset", UIntType(IntWidth(1)), FEMALE), WRef("reset", UIntType(IntWidth(1)), ExpKind, MALE))
 			added_stmts += Connect(NoInfo, WRef(output, size, ExpKind, FEMALE), WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "out", size, MALE))
-			if (!output_size.arr.contains(size)){
-				output_size.arr += size
+			if (!output_size.arr.contains((size, feedback_target.arr.contains(output)))){
+				output_size.arr += ((size, feedback_target.arr.contains(output)))
 				voter_count += 1
 			}
 			count += 1

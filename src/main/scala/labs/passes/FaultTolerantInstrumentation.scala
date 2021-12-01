@@ -18,7 +18,11 @@ import scala.collection.mutable.ArrayBuffer
 import java.io.File
 
 object output_size{
-  var arr: Set[Type] = Set()
+  var arr: Set[(Type, Boolean)] = Set()
+}
+
+object feedback_target{
+  var arr: List[String] = List()
 }
 
 object redundancy_number{
@@ -32,16 +36,6 @@ object signals{
   var start_signal = ""
 }
 
-/*case FaultTolerantAnnotation(z, mode, ready_signal, start_signal) => {
-			mode match{
-				case "DMR" => {redundancy_number.n = 2; redundancy_number.mode = "DMR"; cc = dmr.run(c, z)}
-				case "TMR" => {redundancy_number.n = 3; redundancy_number.mode = "TMR"; cc = tmr.run(c, z)}
-				case "Temporal" => {redundancy_number.n = 2; redundancy_number.mode = "Temporal"; signals.ready_signal = ready_signal; signals.start_signal = start_signal; cc = temporal.run(c, z)}
-				case other => throw new Exception(mode + " Incorrect Configuration")
-			}
-		}
-*/
-
 class FaultTolerantInstrumentation extends Transform {
  def inputForm: CircuitForm = HighForm
   def outputForm: CircuitForm = HighForm
@@ -49,28 +43,35 @@ class FaultTolerantInstrumentation extends Transform {
 	var dmr = new DMR
 	var tmr = new TMR
 	var temporal = new Temporal
+	var ir = new IR
 	var cc = c
 	annos.foreach{
-		case FaultTolerantDMRAnnotation(z) => {
+		case FaultTolerantDMRAnnotation(z, feedback, feedback_target_list) => {
 			output_size.arr = Set()
 			redundancy_number.count = 0
 			redundancy_number.n = 2; 
 			redundancy_number.mode = "DMR" 
-			cc = dmr.run(c, z)
+			feedback_target.arr = feedback_target_list
+			cc = dmr.run(c, z, feedback)
 		}
-		case FaultTolerantTMRAnnotation(z) => {
+		case FaultTolerantTMRAnnotation(z, feedback, feedback_target_list) => {
 			output_size.arr = Set()
 			redundancy_number.count = 0
 			redundancy_number.n = 3
 			redundancy_number.mode = "TMR"
-			cc = tmr.run(c, z)
+			feedback_target.arr = feedback_target_list
+			cc = tmr.run(c, z, feedback)
 		}
-		case FaultTolerantTemporalAnnotation(z, ready_signal, start_signal) => {
+		case FaultTolerantTemporalAnnotation(z, ready_signal, start_signal, feedback, feedback_target_list) => {
 			redundancy_number.n = 2
 			redundancy_number.mode = "Temporal" 
 			signals.ready_signal = ready_signal 
 			signals.start_signal = start_signal 
-			cc = temporal.run(c, z)
+			feedback_target.arr = feedback_target_list
+			cc = temporal.run(c, z, feedback)
+		}
+		case FaultTolerantInformationAnnotation(z, roundkey, tosbox_before, tosbox_after, tosbox_write, tomixcolumns, round_ctr, next_round, feedback_mechanism, feedback_target_list) => {
+			cc = ir.run(c, z, roundkey, tosbox_before, tosbox_after, tosbox_write, tomixcolumns, round_ctr, next_round, feedback_mechanism, feedback_target_list)
 		}
 		case other => {}
 	}

@@ -5,7 +5,7 @@
 #pragma GCC optimize ("O0")
 void finish(int result){
     	int temp;
-    	temp = result + 99; // this is just used as a flag for the testbench
+    	temp = result + 99;
 }
 #pragma GCC pop_options
 

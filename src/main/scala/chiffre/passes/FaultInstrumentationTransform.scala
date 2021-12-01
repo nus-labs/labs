@@ -22,6 +22,7 @@ import firrtl.passes.wiring.WiringTransform
 import firrtl.annotations.{SingleTargetAnnotation, ComponentName}
 import scala.collection.mutable
 import scala.language.existentials
+import labs.passes._
 
 sealed trait FaultAnnos
 
@@ -31,7 +32,7 @@ case class FaultInjectionAnnotation(target: ComponentName, id: String, injector:
 }
 
 class FaultInstrumentationTransform extends Transform {
-  def inputForm: CircuitForm = MidForm
+  def inputForm: CircuitForm = HighForm
   def outputForm: CircuitForm = HighForm
   def transforms(compMap: Map[String, Seq[(ComponentName, String, Class[_ <: Injector])]]): Seq[Transform] = Seq(
 	new FaultInstrumentation(compMap),
@@ -53,6 +54,8 @@ class FaultInstrumentationTransform extends Transform {
 )
 
   def execute(state: CircuitState): CircuitState = {
+	val edge_reset = state.annotations.collect { case a: ResetAnnotation => a}
+	println(edge_reset)
     val myAnnos = state.annotations.collect { case a: FaultAnnos => a }
     myAnnos match {
       case Nil => state
@@ -65,8 +68,7 @@ class FaultInstrumentationTransform extends Transform {
         comp.foreach{ case (k, v) =>
           logger.info(s"[info] $k")
           v.foreach( a => logger.info(s"[info]   - ${a._1.name}: ${a._2}: ${a._3}") )}
-
-        transforms(comp.toMap).foldLeft(state)((old, x) => x.runTransform(old))
+        transforms(comp.toMap).foldLeft(state)((old, x) => {x.runTransform(old);})
           .copy(annotations = (state.annotations.toSet -- myAnnos.toSet).toSeq)
     }
   }

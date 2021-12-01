@@ -18,20 +18,23 @@ import scala.collection.mutable.ArrayBuffer
 import java.io.File
 
 class Temporal {
-  def run(c:Circuit, component:ComponentName): Circuit ={
+  def run(c:Circuit, component:ComponentName, feedback: Int): Circuit ={
     var modules = c.modules	
 	modules = modules.map(splitM(_,component))
 	
 	var k = c.copy(modules=modules)
-	var size_lst = ArrayBuffer[Int]()
+	var size_lst = ArrayBuffer[(Int, Int)]()
 
 	output_size.arr.foreach{
-		case UIntType(width) => { // Can rely on ordering from set?
+		case (UIntType(width), whether_add_feedback) => { // Can rely on ordering from set?
 			var bitwidth = width.asInstanceOf[IntWidth].width.toInt
-			if(!size_lst.contains(bitwidth)){
-				println("ADD MODULES")
-				k = add_modules(k, bitwidth)
-				size_lst = size_lst :+ bitwidth
+			println("OUTPUT")
+			println(width, whether_add_feedback)
+			println(size_lst)
+			val feedback_determined = if (whether_add_feedback) feedback else 0
+			if(!size_lst.contains((bitwidth, feedback_determined))){
+				k = add_modules(k, bitwidth, feedback_determined)
+				size_lst = size_lst :+ ((bitwidth, feedback_determined))
 			}
 		}
 		case p => throw new Exception("There is something wrong with the type " + p.getClass)
@@ -40,30 +43,16 @@ class Temporal {
 	k.copy(modules=new_modules)
 }
 
-  def remove_dup_modules(modules: Seq[DefModule]): Seq[DefModule] = {
-	var module_names: Set[String] = Set()
-	var new_modules: Seq[DefModule] = Seq()
-	modules.foreach{
-		module => {
-			if (!module_names.contains(module.asInstanceOf[Module].name)){
-				module_names = module_names + module.asInstanceOf[Module].name
-				new_modules = new_modules :+ module
-			}
-		}
-	}
-	return new_modules
-  }
-
-  def add_modules(k: Circuit, bitwidth: Int): Circuit = {
+  def add_modules(k: Circuit, bitwidth: Int, feedback: Int): Circuit = {
 		var design = {
 			var arr = ArrayBuffer[DefModule]()
 			var inputreg = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new InputReg(bitwidth)))
-			var outputreg = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new OutputReg(bitwidth)))
+			var outputreg = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new OutputReg(bitwidth, feedback)))
 			arr = arr ++ inputreg.modules ++ outputreg.modules
 			Circuit(NoInfo, arr, "temporal")
 		}
 		var modules = Seq[DefModule]()
-		var detector = design.modules.filter(x => (x.asInstanceOf[Module].name == "Detector" || x.asInstanceOf[Module].name == "Preventer")) // part of outreg, dont need to change its name
+		var detector = design.modules.filter(x => (x.asInstanceOf[Module].name == "Detector" || x.asInstanceOf[Module].name == "Preventer")) // part of outreg
 		modules = design.modules.filter(x => (x.asInstanceOf[Module].name != "Detector" || x.asInstanceOf[Module].name != "Preventer"))
 		modules = modules.map(_.asInstanceOf[Module].mapStmt(_.mapStmt
 		{
@@ -72,13 +61,20 @@ class Temporal {
 					val ret = DefInstance(info, name, module + bitwidth.toString)
 					ret 
 				}
-				else DefInstance(info, name, module)
+				else if (module == "Preventer"){
+					val ret = DefInstance(info, name, module + bitwidth.toString + "f" + feedback.toString)
+					ret
+				}
+				else DefInstance(info, name, module + bitwidth.toString)
 			}
 			case other =>{other}
 		}))
 		modules = modules ++ detector
 		modules = modules.map{
-			case Module(info, name, ports, body) => Module(info, name + bitwidth.toString, ports, body)
+			case Module(info, name, ports, body) => {
+				if(name == "Preventer") Module(info, name + bitwidth.toString + "f" + feedback.toString, ports, body)
+				else Module(info, name + bitwidth.toString, ports, body)
+			}
 			case other => throw new Exception("There should be something wrong")
 		}
 		var templst = k.modules.map(_.name)
@@ -112,10 +108,6 @@ class Temporal {
 		return m
 	}
   }
-
-  def newNameS(name: String, i: Int): String = name + "_ft" + i.toString
-
-  def newNameT(name: String): String = if (name != "clock" && name != "reset") name + "_temporal" else name
 
   def modify_doprim_temporal(expr: Any, input_lst: List[(String, Type)], output_lst: List[(String, Type)]): Any = {
   	if(expr.isInstanceOf[WRef]){
@@ -170,8 +162,6 @@ class Temporal {
   }
 
   def copyComponents(components: Statement, input_lst: List[(String, Type)], output_lst: List[(String, Type)]): Statement = {
-    //println("COPYCOMPONENTS")
-	//println(components)
 	var temp_block : Block = components.asInstanceOf[Block]
 	var added_stmts = ArrayBuffer[Statement]()
 	var temp = ArrayBuffer[Statement]()
@@ -213,8 +203,6 @@ class Temporal {
 		case ("reset", tpe) => ;
 		case (name, tpe) => {
 			added_stmts prepend DefWire(NoInfo, newNameT(name), tpe)
-			//println("INPUT" + (name, tpe))
-			//temp += Connect(NoInfo, WRef(newNameT(name), tpe, ExpKind, FEMALE), WRef(name, tpe, ExpKind, MALE))
 		}
 	}
 	output_lst.foreach{
@@ -263,8 +251,8 @@ class Temporal {
 			added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "ctrl", ctrl_size, FEMALE), WSubField(WSubField(ctrl_wref, "io", ctrl_inside_io, UNKNOWNGENDER), "ctrl", ctrl_size, MALE))
 			added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "ready", UIntType(IntWidth(1)), FEMALE), WRef(newNameT(signals.ready_signal), UIntType(IntWidth(1)), ExpKind, UNKNOWNGENDER))
 
-			if (!output_size.arr.contains(size)){
-				output_size.arr += size
+			if (!output_size.arr.contains((size, false))){
+				output_size.arr += ((size, false))
 			}
 			count += 1
 		  }
@@ -291,8 +279,10 @@ class Temporal {
 			added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "ctrl", ctrl_size, FEMALE), WSubField(WSubField(ctrl_wref, "io", ctrl_inside_io, UNKNOWNGENDER), "ctrl", ctrl_size, MALE))
 			var each_detect_signal = WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "detect", UIntType(IntWidth(1)), FEMALE)
 			all_detect_signals = all_detect_signals :+ each_detect_signal
-			if (!output_size.arr.contains(size)){
-				output_size.arr += size
+			println(feedback_target.arr.contains(target), target)
+			if (!output_size.arr.contains((size, feedback_target.arr.contains(target)))){
+				println("ADDED", (size, feedback_target.arr.contains(target)))
+				output_size.arr += ((size, feedback_target.arr.contains(target)))
 			}
 			count += 1	
 			}
@@ -306,8 +296,6 @@ class Temporal {
 				arr = DoPrim(PrimOps.Or, ArrayBuffer(signal, arr), ArrayBuffer(), signal.tpe)
 			}
 		}
-		//println("DETECTORED")
-		//println(arr)
 		arr
 	}
 	added_stmts += Connect(NoInfo, detect_output_signal, detect_expr)

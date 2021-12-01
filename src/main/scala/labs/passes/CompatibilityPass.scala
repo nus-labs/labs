@@ -22,7 +22,7 @@ class CompatibilityPass() extends Transform {
 	myAnnos.foreach{
 		anno => anno match{
 			case ClockAnnotation(c) => clockname = c.name
-			case ResetAnnotation(c) => resetname = c.name
+			case ResetAnnotation(c, posedge_reset) => resetname = c.name
 		}
 	}
 	val k = c.copy(modules = c.modules.map(splitM(_, clockname, resetname)))
@@ -30,7 +30,9 @@ class CompatibilityPass() extends Transform {
 }
   def splitM(m: DefModule, clockname: String, resetname: String): DefModule = { 
 	val k = m.mapPort(splitP(_, clockname, resetname))
-	k.mapStmt(splitS(_, clockname, resetname))
+	val result = k.mapStmt(splitS(_, clockname, resetname))
+	//result.foreachStmt(x => {println(x); println(x.serialize);})
+	result
 }
 
   def splitP(p: Port, clockname: String, resetname: String): Port ={
@@ -57,16 +59,27 @@ class CompatibilityPass() extends Transform {
 		case other => other
 	}
   }
-	
-  def splitS(s: Statement, clockname: String, resetname: String): Statement = {
-	var ss = s.mapStmt{
+
+  def traverseS(s: Statement, clockname: String, resetname: String): Statement = {
+	s match{
+		case Block(stmts) => {
+			val temp = stmts.map(traverseS(_, clockname, resetname))
+	        Block(temp)
+		}
 		case stmt => {
 			var temp = stmt.mapExpr(splitE(_, clockname, resetname))
 			temp = temp.mapType(splitType(_, clockname, resetname))
 			temp
 		}
 	}
-
+  }
+	
+  def splitS(s: Statement, clockname: String, resetname: String): Statement = {
+	var ss = s.mapStmt{ 
+		x => {
+			traverseS(x, clockname, resetname)
+		}
+	}
 	ss
   }
 
@@ -76,7 +89,7 @@ class CompatibilityPass() extends Transform {
 			name match {
 				case `clockname` => Field("clock", flip, ClockType)
 				case "clock" => Field("clock", flip, ClockType)
-				case `resetname` => Field("reset", flip, tpe)
+				case `resetname` => Field("reset", flip, ResetType)
 				case other => Field(name, flip, tpe)
 			}
 		}
@@ -92,7 +105,7 @@ class CompatibilityPass() extends Transform {
 			name match{
 				case `clockname` => WRef("clock", ClockType, port, gender)
 				case "clock" => WRef("clock", ClockType, port, gender)
-				case `resetname` => WRef("reset", tpe, port, gender)
+				case `resetname` => WRef("reset", ResetType, port, gender)
 				case other => {
 					if(tpe.isInstanceOf[BundleType]){
 						val modified_tpe = BundleType(tpe.asInstanceOf[BundleType].fields.map(changeField(_, clockname, resetname)))

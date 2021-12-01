@@ -11,25 +11,24 @@ import firrtl.annotations.{SingleTargetAnnotation, ComponentName}
 import scala.collection.mutable
 import scala.language.existentials
 
-class FaultTolerantTransform extends Transform {
+// Yosys provides a bad FIRRTL format
+// LowFirrtlOptimization helps!
+
+class YosysTransform extends Transform {
   def inputForm: CircuitForm = LowForm
-  def outputForm: CircuitForm = HighForm
+  def outputForm: CircuitForm = LowForm
   def transforms(): Seq[Transform] = Seq(
-	new CompatibilityPass,
-	RemoveEmpty,
-	new FaultTolerantInstrumentation,
 	InferTypes,
 	ResolveKinds,
 	InferTypes,
 	CheckTypes,
 	ResolveGenders,
-	RemoveValidIf,
-	Uniquify,
-	new firrtl.transforms.InferResets
+	RemoveEmpty,
+	new LowFirrtlOptimization,
+	RemoveEmpty,
  )
 
   def execute(state: CircuitState): CircuitState = {
         transforms.foldLeft(state)((old, x) => x.runTransform(old))
-    	
   }
 }

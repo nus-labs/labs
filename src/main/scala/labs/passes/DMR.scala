@@ -18,18 +18,19 @@ import scala.collection.mutable.ArrayBuffer
 import java.io.File
 
 class DMR {
-  def run(c:Circuit, component:ComponentName): Circuit ={
+  def run(c:Circuit, component:ComponentName, feedback: Int): Circuit ={
 	var modules = c.modules
-	modules = modules.map(splitM(_, component))
+	modules = modules.map(traverseM(_, component, feedback))
 
 	var k = c.copy(modules=modules)
 	var size_lst = ArrayBuffer[Int]()
 
 	output_size.arr.foreach{
-		case UIntType(width) => { // Can rely on ordering from set?
+		case (UIntType(width), whether_add_feedback) => { // Can rely on ordering from set?
 			var bitwidth = width.asInstanceOf[IntWidth].width.toInt
 			if(!size_lst.contains(bitwidth)){
-				k = add_modules(k, bitwidth)
+				val feedback_determined = if (whether_add_feedback) feedback else 0
+				k = add_modules(k, bitwidth, feedback_determined)
 				size_lst = size_lst :+ bitwidth
 			}
 		}
@@ -40,44 +41,9 @@ class DMR {
 	k.copy(modules=new_modules)
 }
 
-  def remove_dup_modules(modules: Seq[DefModule]): Seq[DefModule] = {
-	var module_names: Set[String] = Set()
-	var new_modules: Seq[DefModule] = Seq()
-	modules.foreach{
-		module => {
-			if (!module_names.contains(module.asInstanceOf[Module].name)){
-				module_names = module_names + module.asInstanceOf[Module].name
-				new_modules = new_modules :+ module
-			}
-		}
-	}
-	return new_modules
-  }
-
-  def add_modules(k: Circuit, bitwidth: Int): Circuit = {
-	var design = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new Detector(bitwidth)))
-	var modules = Seq[DefModule]()
-
-	var module = design.modules.filter(_.asInstanceOf[Module].name == "Detector").last 	
-	var new_name = module.asInstanceOf[Module].name + bitwidth.toString
-	module = module.asInstanceOf[Module].copy(name=new_name)
-	modules = design.modules.filter(_.asInstanceOf[Module].name != "Detector") :+ module.asInstanceOf[Module] 			
-		
-	var preventer = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new Preventer(bitwidth, true)))
-	module = preventer.modules.filter(_.asInstanceOf[Module].name == "Preventer").last
-	new_name = module.asInstanceOf[Module].name + bitwidth.toString
-	module = module.asInstanceOf[Module].copy(name=new_name)
-	modules = modules :+ module.asInstanceOf[Module]
-		
-	design = design.copy(modules=modules)
-	design = ToWorkingIR.run(design)
-	var kk = k.copy(modules = k.modules ++ design.modules)
-	kk
-  }
-
-  def splitM(m: DefModule, component: ComponentName): DefModule = { 
+  def traverseM(m: DefModule, component: ComponentName, feedback: Int): DefModule = { 
 	if( component.module.name == m.name ){
-		if( component.name == "None" ){
+		if( component.name == "None" ){ // whole module
 			var io_lst = List[String]()
 			var input_lst = List[(String, Type)]()
 			var output_lst = List[(String, Type)]()
@@ -91,62 +57,17 @@ class DMR {
 			mm = mm.mapStmt(copyComponents(_, input_lst, output_lst)).asInstanceOf[Module] // expect Block
 			return mm
 		}
-		else{
+		else{ // specific component in a module
 			var ports = m.ports
 			ports = ports :+ Port(NoInfo, "detect", Output, UIntType(IntWidth(1)))
 			var mm = m.asInstanceOf[Module].copy(ports=ports)
-			mm = add_component(mm, component)
+			mm = add_component(mm, component, feedback)
 			return mm
 		}
 	}
 	else{
 		return m
 	}
-  }
-
-  def newNameS(name: String, i: Int): String = name + "_ft" + i.toString
-
-  def add_component(m: Module, component: ComponentName): Module = {
-	var name = component.name
-	var stmts = m.asInstanceOf[Module].body.asInstanceOf[Block].stmts
-	var allregs = stmts.filter(_.isInstanceOf[DefRegister])
-	var allwire = stmts.filter(_.isInstanceOf[DefWire])
-	var reg = allregs.filter(_.asInstanceOf[DefRegister].name == component.name).last.asInstanceOf[DefRegister]
-	var added_reg = reg.copy(name = newNameS(reg.name, 0))
-	stmts = stmts :+ added_reg
-	stmts = add_detector_component(stmts, component, reg.tpe)
-	output_size.arr += reg.tpe
-	var mm = m.asInstanceOf[Module].copy(body = Block(stmts))
-	mm
-  }
-
-  def transform_expr(expr: Expression, io_lst: List[String], i: Int): Expression = {
-  	if(expr.isInstanceOf[WRef]){
-		val expr_name = expr.serialize
-		val expr_name_ft = if (io_lst.contains(expr_name)) expr_name else newNameS(expr_name, i)
-		val ret = expr.asInstanceOf[WRef].copy(name=expr_name_ft)
-		return ret 
-	}
-	else if(expr.isInstanceOf[Mux] || expr.isInstanceOf[ValidIf] || expr.isInstanceOf[DoPrim] || expr.isInstanceOf[UIntLiteral] || expr.isInstanceOf[WSubField]){
-		expr.mapExpr(transform_expr(_, io_lst, i))
-	}
-	else{
-		throw new Exception(expr.getClass + " not yet implemented")
-	}
-	
-  }
-
-  def getName(ref: Expression): String = ref.serialize
-  
-  def add_output_relationship(feed_to_output_map: scala.collection.mutable.Map[String, ArrayBuffer[Expression]], ref1: String, ref2: Expression, ref2_ft: Expression): scala.collection.mutable.Map[String, ArrayBuffer[Expression]] = {
-	if (feed_to_output_map.contains(ref1)) feed_to_output_map(ref1) += ref2_ft
-	else feed_to_output_map += ref1 -> ArrayBuffer(ref2, ref2_ft)
-	feed_to_output_map
-  }
-
-  def add_input_relationship(from_input_map: scala.collection.mutable.Map[Expression, Expression], ref1: Expression, ref2: Expression): scala.collection.mutable.Map[Expression, Expression] = {
-	from_input_map += ref2 -> ref1
-	from_input_map
   }
 
   def copyComponents(components: Statement, input_lst: List[(String, Type)], output_lst: List[(String, Type)]): Statement = {
@@ -158,12 +79,12 @@ class DMR {
 	var from_input_map = scala.collection.mutable.Map[Expression, Expression]()
 	var del_lst = ArrayBuffer[Statement]()
 	var i = 0
-	temp_block.stmts.foreach{
+	temp_block.stmts.foreach{ // TODO: Is it enough for low FIRRTL?
 		case DefWire(info, name, tpe) => {
 			added_stmts += DefWire(info, newNameS(name, i), tpe)
 		}
 		case DefRegister(info, name, tpe, doprim, a, init) => {
-			added_stmts += DefRegister(info, newNameS(name, i), tpe, doprim, a, transform_expr(init, io_lst, i).asInstanceOf[Expression] )
+			added_stmts += DefRegister(info, newNameS(name, i), tpe, doprim, a, transform_expr(init, io_lst, i) )
 		}
 		case DefInstance(info, name, module) => {
 			added_stmts += DefInstance(info, newNameS(name, i), module)
@@ -173,7 +94,7 @@ class DMR {
 		}
 		case DefNode(info, ref1, ref2) => { // ref1 is a string
 			val ref1_ft = if (io_lst.contains(ref1)) ref1 else newNameS(ref1, i)
-			if(ref2.isInstanceOf[Reference] || ref2.isInstanceOf[DoPrim] || ref2.isInstanceOf[Mux]){
+			if(ref2.isInstanceOf[WRef] || ref2.isInstanceOf[DoPrim] || ref2.isInstanceOf[Mux]){
 				val ref2_ft = transform_expr(ref2, io_lst, i)
 				if(output_lst.map(_._1).contains(ref1)){
 					feed_to_output_map = add_output_relationship(feed_to_output_map, ref1, ref2, ref2_ft)
@@ -183,6 +104,8 @@ class DMR {
 					added_stmts += DefNode(info, ref1_ft, ref2_ft)
 			}	
 			else{
+				// TODO: Is this too restricted?
+				// Can the if above be removed?
 				added_stmts += DefNode(info, ref1_ft, ref2)
 			}
 		}
@@ -190,11 +113,10 @@ class DMR {
 			val ref1_name = getName(ref1)
 			val ref1_ft = transform_expr(ref1, io_lst, i)
 
-			if(ref2.isInstanceOf[Reference] || ref2.isInstanceOf[WRef] || ref2.isInstanceOf[DoPrim] || ref2.isInstanceOf[Mux] || ref2.isInstanceOf[WSubField]){
+			if(ref2.isInstanceOf[WRef] || ref2.isInstanceOf[DoPrim] || ref2.isInstanceOf[Mux] || ref2.isInstanceOf[WSubField]){
 				val ref2_ft = transform_expr(ref2, io_lst, i)
 				if(output_lst.map(_._1).contains(ref1_name)){
 					feed_to_output_map = add_output_relationship(feed_to_output_map, ref1_name, ref2, ref2_ft)
-
 					del_lst += Connect(info, ref1, ref2)
 				}
 				else
@@ -202,8 +124,7 @@ class DMR {
 			}
 			else if(ref2.isInstanceOf[UIntLiteral]){
 				if(!output_lst.map(_._1).contains(ref1_name)) added_stmts += Connect(info, ref1_ft, ref2)
-				// must check
-				else throw new Exception("Something Weird")
+				else throw new Exception("This line should not be executed")
 			}
 			else{
 				throw new Exception(ref2.getClass + " not yet implemented")
@@ -226,6 +147,73 @@ class DMR {
 	added_stmts = add_preventer(added_stmts, feed_to_output_map)
 	added_stmts = (temp_block.stmts.toBuffer ++ added_stmts).asInstanceOf[ArrayBuffer[Statement]]
 	temp_block.copy(stmts=added_stmts)
+  }
+
+  def transform_expr(expr: Expression, io_lst: List[String], i: Int): Expression = {
+  	if(expr.isInstanceOf[WRef]){
+		val expr_name = expr.serialize
+		val expr_name_ft = if (io_lst.contains(expr_name)) expr_name else newNameS(expr_name, i) // Keep port name otherwise give new name
+		val ret = expr.asInstanceOf[WRef].copy(name=expr_name_ft)
+		return ret 
+	}
+	else if(expr.isInstanceOf[Mux] || expr.isInstanceOf[ValidIf] || expr.isInstanceOf[DoPrim] || expr.isInstanceOf[UIntLiteral] || expr.isInstanceOf[WSubField]){
+		expr.mapExpr(transform_expr(_, io_lst, i))
+	}
+	else{
+		throw new Exception(expr.getClass + " not yet implemented")
+	}
+  }
+
+  def add_modules(k: Circuit, bitwidth: Int, feedback: Int): Circuit = {
+	var design = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new Detector(bitwidth)))
+	var modules = Seq[DefModule]()
+
+	var module = design.modules.filter(_.asInstanceOf[Module].name == "Detector").last 	
+	var new_name = module.asInstanceOf[Module].name + bitwidth.toString + "_" + feedback.toString
+	module = module.asInstanceOf[Module].copy(name=new_name)
+	modules = design.modules.filter(_.asInstanceOf[Module].name != "Detector") :+ module.asInstanceOf[Module] 			
+		
+	var preventer = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new Preventer(bitwidth, feedback)))
+	module = preventer.modules.filter(_.asInstanceOf[Module].name == "Preventer").last
+	new_name = module.asInstanceOf[Module].name + bitwidth.toString + "_" + feedback.toString
+	module = module.asInstanceOf[Module].copy(name=new_name)
+	modules = modules :+ module.asInstanceOf[Module]
+	modules = preventer.modules.filter(_.asInstanceOf[Module].name != "Preventer") ++ modules  
+
+	design = design.copy(modules=modules)
+	design = ToWorkingIR.run(design)
+	var kk = k.copy(modules = k.modules ++ design.modules)
+	kk
+  }
+
+  def add_component(m: Module, component: ComponentName, feedback: Int): Module = {
+	var name = component.name
+	var stmts = m.asInstanceOf[Module].body.asInstanceOf[Block].stmts.asInstanceOf[ArrayBuffer[Statement]]
+	var allregs = stmts.filter(_.isInstanceOf[DefRegister])
+	var allwires = stmts.filter(_.isInstanceOf[DefWire])
+	var allregs_names = allregs.map(_.asInstanceOf[DefRegister].name)
+	var allwires_names = allwires.map(_.asInstanceOf[DefWire].name)
+	var target_component = stmts(0) // just to initialise
+	if (allregs_names.contains(component.name)){
+		target_component = allregs.filter(_.asInstanceOf[DefRegister].name == component.name).last
+		target_component = target_component.asInstanceOf[DefRegister].copy(name = newNameS(target_component.asInstanceOf[DefRegister].name, 0))
+		stmts += target_component
+		stmts = add_preventer_component(stmts, component, target_component.asInstanceOf[DefRegister].tpe, feedback)
+		stmts = add_detector_component(stmts, component, target_component.asInstanceOf[DefRegister].tpe, feedback)
+		output_size.arr += ((target_component.asInstanceOf[DefRegister].tpe, true)) // always true
+	}
+	else if (allwires_names.contains(component.name)){
+		target_component = allwires.filter(_.asInstanceOf[DefWire].name == component.name).last
+		target_component = target_component.asInstanceOf[DefWire].copy(name = newNameS(target_component.asInstanceOf[DefWire].name, 0))
+		stmts += target_component
+		stmts = add_detector_component(stmts, component, target_component.asInstanceOf[DefWire].tpe, feedback)
+		output_size.arr += ((target_component.asInstanceOf[DefWire].tpe, true)) // always true
+	}
+	else{
+		throw new Exception(component.name + " not found")
+	}
+	var mm = m.asInstanceOf[Module].copy(body = Block(stmts))
+	mm
   }
 
   def add_preventer(added_stmts: ArrayBuffer[Statement], feed_to_output_map: scala.collection.mutable.Map[String, ArrayBuffer[Expression]]): ArrayBuffer[Statement] = {
@@ -273,8 +261,8 @@ class DMR {
 			added_stmts += Connect(NoInfo, WSubField(wref, "reset", UIntType(IntWidth(1)), FEMALE), WRef("reset", UIntType(IntWidth(1)), ExpKind, MALE))
 			var each_detect_signal = WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "detect", UIntType(IntWidth(1)), FEMALE)
 			all_detect_signals = all_detect_signals :+ each_detect_signal
-			if (!output_size.arr.contains(size)){
-				output_size.arr += size
+			if (!output_size.arr.contains((size, feedback_target.arr.contains(output)))){
+				output_size.arr += ((size, feedback_target.arr.contains(output)))
 			}
 			count += 1
 		}	
@@ -293,7 +281,60 @@ class DMR {
 	added_stmts
   }
 
-  def add_detector_component(stmts: Seq[Statement], component: ComponentName, tpe: Type): Seq[Statement] = {
+  def convert_all_targets(expr: Expression, component: ComponentName, preventer_name: String, preventer_size: Type, preventer_wref: WRef, preventer_inside_io: BundleType): Expression = {
+	var output_port_from_preventer = WSubField(WSubField(preventer_wref, "io", preventer_inside_io, UNKNOWNGENDER), "out", preventer_size, MALE)
+    if(expr.isInstanceOf[WRef]){
+        val expr_name = expr.serialize
+		if(expr_name == component.name){
+			return output_port_from_preventer
+		}
+		else{
+			return expr
+		}
+    }
+    else if(expr.isInstanceOf[Mux] || expr.isInstanceOf[ValidIf] || expr.isInstanceOf[DoPrim] || expr.isInstanceOf[UIntLiteral] || expr.isInstanceOf[WSubField]){
+        return expr.mapExpr(convert_all_targets(_, component, preventer_name, preventer_size, preventer_wref, preventer_inside_io))
+    }
+    else{
+        throw new Exception(expr.getClass + " not yet implemented")
+    }
+  }
+
+  def convert_all_connected_ports(added_stmts: ArrayBuffer[Statement], component: ComponentName, preventer_name: String, preventer_size: Type, preventer_wref: WRef, preventer_inside_io: BundleType): ArrayBuffer[Statement] ={
+	var arr = ArrayBuffer[Statement]()
+	added_stmts.map({
+		case DefNode(info, ref1, ref2) => {
+			DefNode(info, ref1, convert_all_targets(ref2, component, preventer_name, preventer_size, preventer_wref, preventer_inside_io))
+		}
+		case Connect(info, ref1, ref2) => {
+			Connect(info, ref1, convert_all_targets(ref2, component, preventer_name, preventer_size, preventer_wref, preventer_inside_io))
+		}
+		case other => {other}
+	})
+  }
+
+  def add_preventer_component(stmts: ArrayBuffer[Statement], component: ComponentName, tpe: Type, feedback: Int): ArrayBuffer[Statement] = {
+	var count = 0
+	var all_detect_signals = ArrayBuffer[Expression]()
+	val name = "p" + count.toString
+	val feed_to_output = component.name
+	val size = tpe
+	val bitwidth = size.asInstanceOf[UIntType].width.asInstanceOf[IntWidth].width.toInt
+	val inside_io = BundleType(Vector(Field("in", Flip, size), Field("out", Default, size), Field("detect", Flip, UIntType(IntWidth(1)))))
+	val ports = ArrayBuffer(Field("clock", Flip, ClockType), Field("reset", Flip, UIntType(IntWidth(1))), Field("io", Default, inside_io))
+	val wref = WRef(name, BundleType(ports), ExpKind, UNKNOWNGENDER)
+	var added_stmts = stmts 
+	added_stmts.prepend(WDefInstance(NoInfo, name, "Preventer" + bitwidth.toString + "_" + feedback.toString, UnknownType))
+	added_stmts = convert_all_connected_ports(added_stmts, component, name, size, wref, inside_io)
+	added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in", size, FEMALE), WRef(feed_to_output, tpe, ExpKind, MALE))
+	added_stmts += Connect(NoInfo, WSubField(wref, "clock", ClockType, FEMALE), WRef("clock", ClockType, ExpKind, MALE))
+	added_stmts += Connect(NoInfo, WSubField(wref, "reset", UIntType(IntWidth(1)), FEMALE), WRef("reset", UIntType(IntWidth(1)), ExpKind, MALE))
+	added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "detect", UIntType(IntWidth(1)), FEMALE), WRef("detect", UIntType(IntWidth(1)), ExpKind, MALE))
+	count += 1
+	added_stmts
+  }
+
+  def add_detector_component(stmts: ArrayBuffer[Statement], component: ComponentName, tpe: Type, feedback: Int): ArrayBuffer[Statement] = {
 	val name = "dc" + redundancy_number.count.toString
 	redundancy_number.count += 1
 	val bitwidth = tpe.asInstanceOf[UIntType].width.asInstanceOf[IntWidth].width.toInt
@@ -301,7 +342,7 @@ class DMR {
 	val inside_io = BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("detect", Default, UIntType(IntWidth(1)))))
 	val ports = ArrayBuffer(Field("clock", Flip, ClockType), Field("reset", Flip, UIntType(IntWidth(1))), Field("io", Default, inside_io))
 	val wref = WRef(name, BundleType(ports), ExpKind, UNKNOWNGENDER)
-	var added_stmts = stmts :+ WDefInstance(NoInfo, name, "Detector" + bitwidth.toString, UnknownType)
+	var added_stmts = stmts :+ WDefInstance(NoInfo, name, "Detector" + bitwidth.toString + "_" + feedback.toString, UnknownType)
 	added_stmts = added_stmts :+ Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in1", size, FEMALE), WRef(component.name, tpe, ExpKind, MALE))
 	added_stmts = added_stmts :+ Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in2", size, FEMALE), WRef(newNameS(component.name, 0), tpe, ExpKind, MALE))
 	added_stmts = added_stmts :+ Connect(NoInfo, WRef("detect", UIntType(IntWidth(1)), ExpKind, FEMALE), WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "detect", size, FEMALE))

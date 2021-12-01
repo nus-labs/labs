@@ -1,0 +1,39 @@
+#! /bin/bash
+action=''
+firrtl_file=''
+configuration_file=''
+target_dir='.'
+output_type='verilog'
+yosys='/home/game11189/yosys/yosys'
+usage(){
+	printf "Usage:\n[-a] action (inject/protect/yosys)\n[-i] input file\n[-c] configuration file\n[-d] target output directory (default: '.')\n[-x] output type (low/verilog)\n"
+}
+while getopts 'a:i:c:dx:' flag; do
+	case "${flag}" in
+		a) action="${OPTARG}" ;;
+		i) input_file="${OPTARG}" ;;
+		c) configuration_file="${OPTARG}" ;;
+		d) target_dir="${OPTARG}" ;;
+		x) output_type="${OPTARG}" ;;
+		*) usage ; exit 1;;
+	esac
+done
+if [ $OPTIND -eq 1 ] # no arguments passed
+then
+	usage
+elif [ $action == 'inject' ]
+then
+	printf "Inserting fault controller and fault injector\n"
+	sbt "runMain firrtl.stage.FirrtlMain -i $input_file -X $output_type --custom-transforms labs.passes.FaultInjectionTransform -faf $configuration_file -td $target_dir"
+elif [ $action == 'protect' ]
+then
+	printf "Inserting protection\n"
+    sbt "runMain firrtl.stage.FirrtlMain -i $input_file -X $output_type --custom-transforms labs.passes.FaultTolerantTransform -faf $configuration_file -td $target_dir"
+elif [ $action == 'yosys' ]
+then
+	printf "Generate a FIRRTL file from Verilog files using Yosys\n"
+	VERILOG_FILES=$input_file VERILOG_DIR=$(dirname "$input_file") $yosys $configuration_file
+	sbt "runMain firrtl.stage.FirrtlMain -i TestDesign.fir -X low --custom-transforms labs.passes.YosysTransform -td $target_dir -o TestDesign"
+else
+	usage
+fi

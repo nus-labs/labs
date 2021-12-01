@@ -1,10 +1,13 @@
-// Please change the values here
-`define PROBE testDesign.something // used to check when to collect data
-`define PROBE2 testDesign.something // used to collect data
-`define TARGET_VALUE 34'h01111
-`define CONDITION `PROBE == `TARGET_VALUE
+`define PROBE testHarness.dut.tile.core.ex_reg_pc
+`define PROBE2 testHarness.dut.tile.core.alu_io_in1
+//`define CONDITION 1
+//`define TARGET_ADDRESS 34'h080001060
+//`define PROBE3 testHarness.dut.tile.core.replay_ex_load_use // seems like this is specific for the rocket core only
+`define TARGET_ADDRESS 34'h01111
+`define CONDITION `PROBE == `TARGET_ADDRESS
 `define RESET_DELAY 777.7
 `define CLOCK_PERIOD 1
+//`define CONDITION (`PROBE2 == 1 || `PROBE2 == 0) && (`PROBE3 == 0) 
 
 
 module TestDriver;
@@ -14,6 +17,9 @@ module TestDriver;
 
   always #(`CLOCK_PERIOD/2.0) clock = ~clock;
 
+  // Read input arguments and initialize
+  reg verbose = 1'b0;
+  wire printf_cond = verbose && !reset;
   reg [63:0] max_cycles = 0;
   reg [63:0] trace_count = 0;
   int unsigned rand_value;
@@ -25,6 +31,7 @@ module TestDriver;
   begin
     f = $fopen("./result.txt", "w");
     void'($value$plusargs("max-cycles=%d", max_cycles));
+    verbose = $test$plusargs("verbose");
 	$dumpfile("waveform.vcd");
 	$dumpvars(0, TestDriver);
     rand_value = $urandom;
@@ -40,7 +47,7 @@ module TestDriver;
   reg[63:0] correct_result;
   reg[7:0] counter;
 
-  TestDesign testDesign(
+  TestHarness testHarness(
     .clock(clock),
     .reset(reset),
     .io_success(success)
@@ -83,6 +90,7 @@ module TestDriver;
     end
   end
 
+  reg[33:0] target_addr = `TARGET_ADDRESS;
   reg has_written = 0;
 
 	always @ (posedge clock)  begin
@@ -93,7 +101,7 @@ module TestDriver;
 		else if((`CONDITION)) begin
 			isprinted = 1;
 			if(!has_written) begin
-				$fwrite(f, "%0h", `PROBE2); // this may be changed depending on the size of PROBE2
+				$fwrite(f, "%0h", `PROBE2);
 				has_written = 1;
 			end
 		end
