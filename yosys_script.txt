@@ -1,8 +1,0 @@
-read_verilog <Your_file_name>.v 
-hierarchy -check -top <Your_top_module_name>
-setattr -set keep 1
-proc
-opt
-async2sync
-opt
-write_firrtl TestDesign.fir
