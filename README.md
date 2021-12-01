@@ -41,3 +41,53 @@ The command below integrates a fault controller and injector to a FIRRTL file.
 cd labs
 ./labs -a inject -i <your_design_name>.fir -c <your_configuration_file>.anno.json -d <output_directory> -x <low/verilog>
 ```
+
+## Configurations
+LABS uses JSONs to read a configuration. A configuration consists of a variety of annotation classes with different fields which are described below. Note that some classes may be different from the figure in the paper as LABS has been updated.
+
+### ClockAnnotation and ResetAnnotation
+As a FIRRTL design generated from Yosys may not be fully compatible with the FIRRTL compiler especially due t clock and reset ports, ClockAnnotation and ResetAnnotation are used to help.
+
+```code5
+  {
+    "class":"labs.passes.ClockAnnotation",
+    "target":"None.None.clk"
+  }
+```
+
+ClockAnnotation has one field which requires the user to indicate the clock name of the entire design. In this case, the clock name of this design is "clk". LABS converts "clk" to "clock" and makes the signal compatible with FIRRTL internal representation requirements.
+
+```code6
+  {
+    "class":"labs.passes.ResetAnnotation",
+    "target":"None.None.reset_n",
+    "posedge_reset": 0
+  }
+```
+
+ResetAnnotation has two fields. The "target" field requires the user to indicate the reset name of the entire design. Similar to ClockAnnotation, in this example, LABS converts "reset\_n" to "reset" and makes the signal compatible with FIRRTL internal representation requirements. The "posedge\_reset" field is used to indicate whether the given design uses positive or negetive edge reset. All of the generated modules will have the same reset logic based on this.
+
+### FaultInjectionAnnotation and ScanChainAnnotation
+These two annotations are from a fault injection framework, [https://github.com/IBM/chiffre](Chiffre), that LABS relies on, which are used to integrate fault controllers and fault injectors. 
+
+```code7
+  {
+    "class":"chiffre.passes.FaultInjectionAnnotation",
+    "target":"<circuit_name>.<module_name>.<component_name>",
+    "id":"main",
+    "injector":"chiffre.inject.<injector_name>"
+  },
+```
+
+FaultInjectionAnnotation is used to indicate the target component that will be attacked. The "target" field indicates the target component, and the "injector" field indicates the fault injector to be used.
+
+```code7
+  {
+    "class":"chiffre.passes.ScanChainAnnotation",
+    "target":"aes.FaultController.scan",
+    "ctrl":"master",
+    "dir":"scan",
+    "id":"main"
+  },
+```
+

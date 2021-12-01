@@ -23,7 +23,6 @@
   },
   {
     "class":"labs.passes.FaultControllerUDAnnotation",
-	"_comment": "test",
 	"target":["aes.aes_encipher_block.round_ctr_reg", "aes.aes_encipher_block.round_ctr_we"],
 	"data_target":["h_9", "h_1"],
 	"affected_bits": [[0], [1], [2]], 
