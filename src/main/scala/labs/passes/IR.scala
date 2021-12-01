@@ -17,6 +17,8 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import java.io.File
 
+// Implemented but unused, not flexible yet
+
 class IR {
 
   private var inside_io_mapper = Map( // should be dinamically generated instead

@@ -55,7 +55,6 @@ class FaultInstrumentationTransform extends Transform {
 
   def execute(state: CircuitState): CircuitState = {
 	val edge_reset = state.annotations.collect { case a: ResetAnnotation => a}
-	println(edge_reset)
     val myAnnos = state.annotations.collect { case a: FaultAnnos => a }
     myAnnos match {
       case Nil => state

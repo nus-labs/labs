@@ -28,9 +28,6 @@ class Temporal {
 	output_size.arr.foreach{
 		case (UIntType(width), whether_add_feedback) => { // Can rely on ordering from set?
 			var bitwidth = width.asInstanceOf[IntWidth].width.toInt
-			println("OUTPUT")
-			println(width, whether_add_feedback)
-			println(size_lst)
 			val feedback_determined = if (whether_add_feedback) feedback else 0
 			if(!size_lst.contains((bitwidth, feedback_determined))){
 				k = add_modules(k, bitwidth, feedback_determined)
@@ -279,9 +276,7 @@ class Temporal {
 			added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "ctrl", ctrl_size, FEMALE), WSubField(WSubField(ctrl_wref, "io", ctrl_inside_io, UNKNOWNGENDER), "ctrl", ctrl_size, MALE))
 			var each_detect_signal = WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "detect", UIntType(IntWidth(1)), FEMALE)
 			all_detect_signals = all_detect_signals :+ each_detect_signal
-			println(feedback_target.arr.contains(target), target)
 			if (!output_size.arr.contains((size, feedback_target.arr.contains(target)))){
-				println("ADDED", (size, feedback_target.arr.contains(target)))
 				output_size.arr += ((size, feedback_target.arr.contains(target)))
 			}
 			count += 1	

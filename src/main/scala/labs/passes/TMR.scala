@@ -99,7 +99,6 @@ class TMR {
 			if(output_stmt == null) throw new Exception("The output port is not found")
 
 			var mm = add_component(m.asInstanceOf[Module], component, input_stmt.expr, output_stmt.loc, feedback)
-			mm.body.asInstanceOf[Block].stmts.foreach(x => {println(x.serialize)})
 			return mm
 		}
 	}
@@ -272,7 +271,6 @@ class TMR {
 	var count = 0
 	var voter_count = 0
 	var all_detect_signals = ArrayBuffer[Expression]()
-	print(feed_to_output_map)
 	feed_to_output_map.foreach{
 		mapping =>{
 			val name = "v" + count.toString

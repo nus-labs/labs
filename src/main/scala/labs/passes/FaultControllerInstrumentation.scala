@@ -65,7 +65,6 @@ class FaultControllerInstrumentation() extends Transform {
 	}
 	var elab = chisel3.Driver.toFirrtl(chisel3.Driver.elaborate(() => new FaultController(input_width, data_target, affected_bits, faulty_width, probability, probabilistic, delays)))
 	elab = ToWorkingIR.run(elab)
-	println(elab.modules)
 	temp = temp ++ elab.modules
 	val k = c.copy(modules = temp)
 	k

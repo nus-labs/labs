@@ -8,7 +8,6 @@ import labs.passes._
 @chiselName
 class FaultController(var input_width: List[Int], var datatarget: List[String], var affected_bits: List[List[Int]], var faulty_width: Int, var probability: Int, var probabilistic: Boolean, delays: List[Int]) extends Module with chiffre.ChiffreController {
         lazy val scanId = "main"
-		println(input_width)
         val io = IO(new Bundle{
                 val data_in = Input(Vec(input_width.length, UInt(input_width.max.W)))
 				
