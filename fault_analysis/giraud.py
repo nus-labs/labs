@@ -101,7 +101,6 @@ for i in xored_ciphertext:
 
 fig, ax = plt.subplots()
 x = list(range(len(score_for_each_ciphertext)))
-print(x)
 plt.grid()
 plt.gca().xaxis.set_major_locator(mticker.MultipleLocator(1))
 plt.xlim(0, len(score_for_each_ciphertext))

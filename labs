@@ -8,7 +8,7 @@ yosys='/home/game11189/yosys/yosys'
 usage(){
 	printf "Usage:\n[-a] action (inject/protect/yosys)\n[-i] input file\n[-c] configuration file\n[-d] target output directory (default: '.')\n[-x] output type (low/verilog)\n"
 }
-while getopts 'a:i:c:dx:' flag; do
+while getopts 'a:i:c:d::x:::' flag; do
 	case "${flag}" in
 		a) action="${OPTARG}" ;;
 		i) input_file="${OPTARG}" ;;

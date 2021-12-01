@@ -47,7 +47,7 @@
   {
     "class":"labs.passes.FaultTolerantTMRAnnotation",
     "target":"aes.aes_encipher_block.None",
-	"feedback_target":[],
+	"feedback_target":["new_block"],
 	"feedback":2
   }
 ]

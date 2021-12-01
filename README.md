@@ -54,8 +54,6 @@ cd labs
 ```
 
 ## Integrate fault injection components to a design
-
-### Add a controller and fault injector
 The command below integrates a fault controller and injector to a FIRRTL file. 
 
 ```code2

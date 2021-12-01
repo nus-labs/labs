@@ -277,11 +277,12 @@ class TMR {
 			val output = mapping._1
 			val feed_to_output = mapping._2
 			val size = feed_to_output(0).tpe
+			val determined_feedback = if(feedback_target.arr.contains(output)) feedback.toString else "0"
 			val bitwidth = size.asInstanceOf[UIntType].width.asInstanceOf[IntWidth].width.toInt
 			val ports = ArrayBuffer(Field("clock", Flip, ClockType), Field("reset", Flip, UIntType(IntWidth(1))), Field("io", Default, BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("in3", Flip, size), Field("out", Default, size)))))
 			val inside_io = BundleType(Vector(Field("in1", Flip, size), Field("in2", Flip, size), Field("in3", Flip, size), Field("out", Default, size)))
 			val wref = WRef(name, BundleType(ports), ExpKind, UNKNOWNGENDER)
-			added_stmts += WDefInstance(NoInfo, name, "Voter" + bitwidth.toString + "_" + feedback.toString, UnknownType)
+			added_stmts += WDefInstance(NoInfo, name, "Voter" + bitwidth.toString + "_" + determined_feedback, UnknownType)
 			added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in1", size, FEMALE), feed_to_output(0))
 			added_stmts += 	Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in2", size, FEMALE), feed_to_output(1))
 			added_stmts += Connect(NoInfo, WSubField(WSubField(wref, "io", inside_io, UNKNOWNGENDER), "in3", size, FEMALE), feed_to_output(2))
