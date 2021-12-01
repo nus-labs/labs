@@ -119,13 +119,13 @@ FaultControllerAnnotation has 2 types, FaultControllerUDAnnotation and FaultCont
   {
     "class":"labs.passes.FaultControllerUDAnnotation",
     "target":["<circuit_name>.<module_name>.<component_name>", "<circuit_name>.<module_name>.<component_name>"],
-    "data_target":["h_9", "h_1"],
-    "affected_bits": [[0], [1], [2]],
-    "durations": [1, 1, 1]
+    "data_target":["h_<value>", "h_<value>"],
+    "affected_bits": [[0], [1], [2], [<indices_to_be_injected>]],
+    "durations": [1, 1, 1, <duration_in_cycle>]
   }
 ```
 
-FaultControllerUDAnnotation consists of 4 fields. The "target" field is used to indicate the signals to be observed by the fault controller. The "data\_target" field indicates the condition of each target signal. The fault controller sends a signal to a fault injector when all of the signals in the "target" field equal to its associated value in the "data\_target" field. The "affected\_bits" specifies the indices of faults to be injected to the component indicated in FaultInjectionAnnotation, and the "durations" indicates how long each injection takes in cycles. In this case, the fault injector can fire at most 3 times when the conditions are met. The first fault is injected to the bit index 0, second fault to index 1 and third fault to index 2 with 1 cycle duration.
+FaultControllerUDAnnotation consists of 4 fields. The "target" field is used to indicate the signals to be observed by the fault controller. The "data\_target" field indicates the condition of each target signal. The fault controller sends a signal to a fault injector when all of the signals in the "target" field equal to its associated value (in hex) in the "data\_target" field. The "affected\_bits" specifies the indices of faults to be injected to the component indicated in FaultInjectionAnnotation, and the "durations" indicates how long each injection takes in cycles. In this case, the fault injector can fire at most 3 times when the conditions are met. The first fault is injected to the bit index 0, second fault to index 1 and third fault to index 2 with 1 cycle duration.
 
 TODO Explain FaultControllerProbAnnotation
 
