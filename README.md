@@ -6,6 +6,28 @@ We propose the Laser Attack Benchmark Suite (LABS) that tries to complete the se
 
 The official website of the Laser Attack Benchmark Suite can be found in this website [https://nus-labs.github.io/](https://nus-labs.github.io/).
 
+Detailed information can be found in a ICCAD 2020 paper, [https://dl.acm.org/doi/10.1145/3400302.3415646](Laser Attack Benchmark Suite).
+
+```code99
+@inproceedings{10.1145/3400302.3415646,
+author = {Amornpaisannon, Burin and Diavastos, Andreas and Peh, Li-Shiuan and Carlson, Trevor E.},
+title = {Laser Attack Benchmark Suite},
+year = {2020},
+isbn = {9781450380263},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3400302.3415646},
+doi = {10.1145/3400302.3415646},
+ooktitle = {Proceedings of the 39th International Conference on Computer-Aided Design},
+articleno = {50},
+numpages = {9},
+keywords = {hardware security, benchmark suite, laser fault attack, integrated circuits},
+location = {Virtual Event, USA},
+series = {ICCAD '20}
+}
+```
+
+
 ## Convert a Verilog design to FIRRTL
 LABS is implemented inside the FIRRTL compiler. Thus, Verilog to FIRRTL conversion is needed. Yosys, a framework for RTL synthesis, supports this conversion and is used in this framework. LABS provides a TCL script to automate the conversion inside yosys\_script.tcl. The script can also be modified based on your needs. To input a number of files to Yosys, an asterisk can also be used, for example /<path>/\*, to provide all files inside the path to Yosys.
 
@@ -43,7 +65,7 @@ cd labs
 ```
 
 ## Configurations
-LABS uses JSONs to read a configuration. A configuration consists of a variety of annotation classes with different fields which are described below. Note that some classes may be different from the figure in the paper as LABS has been updated.
+LABS uses JSONs to read a configuration. A configuration consists of a variety of annotation classes with different fields which are described below. Note that some classes may be different from the figure in the paper as LABS has been updated. The implementation of all the annotations for LABS can be found in /src/main/scala/labs/passes/Annotations.scala.
 
 ### ClockAnnotation and ResetAnnotation
 As a FIRRTL design generated from Yosys may not be fully compatible with the FIRRTL compiler especially due t clock and reset ports, ClockAnnotation and ResetAnnotation are used to help.
@@ -76,18 +98,48 @@ These two annotations are from a fault injection framework, [https://github.com/
     "target":"<circuit_name>.<module_name>.<component_name>",
     "id":"main",
     "injector":"chiffre.inject.<injector_name>"
-  },
+  }
 ```
 
 FaultInjectionAnnotation is used to indicate the target component that will be attacked. The "target" field indicates the target component, and the "injector" field indicates the fault injector to be used.
 
-```code7
+```code8
   {
     "class":"chiffre.passes.ScanChainAnnotation",
     "target":"aes.FaultController.scan",
     "ctrl":"master",
     "dir":"scan",
     "id":"main"
-  },
+  }
 ```
 
+### FaultControllerAnnotation
+FaultControllerAnnotation has 2 types, FaultControllerUDAnnotation and FaultControllerProbAnnotation, which are read to configure a fault controller. The former is used when using user-defined faults, and the latter is used when using random or probabilistic faults.
+
+```code9
+  {
+    "class":"labs.passes.FaultControllerUDAnnotation",
+    "target":["<circuit_name>.<module_name>.<component_name>", "<circuit_name>.<module_name>.<component_name>"],
+    "data_target":["h_9", "h_1"],
+    "affected_bits": [[0], [1], [2]],
+    "durations": [1, 1, 1]
+  }
+```
+
+FaultControllerUDAnnotation consists of 4 fields. The "target" field is used to indicate the signals to be observed by the fault controller. The "data\_target" field indicates the condition of each target signal. The fault controller sends a signal to a fault injector when all of the signals in the "target" field equal to its associated value in the "data\_target" field. The "affected\_bits" specifies the indices of faults to be injected to the component indicated in FaultInjectionAnnotation, and the "durations" indicates how long each injection takes in cycles. In this case, the fault injector can fire at most 3 times when the conditions are met. The first fault is injected to the bit index 0, second fault to index 1 and third fault to index 2 with 1 cycle duration.
+
+TODO Explain FaultControllerProbAnnotation
+
+### FaultTolerantAnnotation
+FaultTolerantAnnotation consists of 3 types, FaultTolerantDMRAnnotation, FaultTolerantTMRAnnotation and FaultTolerantTemporalAnnotation, to integrate DMR, TMR and temporal redundancy, respectively.
+
+```code10
+  {
+    "class":"labs.passes.FaultTolerant<DMR/TMR>Annotation",
+    "target":"<circuit_name>.<module_name>.<component_name>",
+    "feedback_target":[<target_port>],
+    "feedback":2
+  }
+```
+
+To integrate DMR or TMR, 3 fields are needed. The "target" field indicates the target location that will be protected. The <component\_name> can be a component name or "None". If "None" is found, the entire <module\_name> will be protected.
