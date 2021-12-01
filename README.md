@@ -27,7 +27,6 @@ series = {ICCAD '20}
 }
 ```
 
-
 ## Convert a Verilog design to FIRRTL
 LABS is implemented inside the FIRRTL compiler. Thus, Verilog to FIRRTL conversion is needed. Yosys, a framework for RTL synthesis, supports this conversion and is used in this framework. LABS provides a TCL script to automate the conversion inside yosys\_script.tcl. The script can also be modified based on your needs. To input a number of files to Yosys, an asterisk can also be used, for example /<path>/\*, to provide all files inside the path to Yosys.
 
@@ -142,4 +141,6 @@ FaultTolerantAnnotation consists of 3 types, FaultTolerantDMRAnnotation, FaultTo
   }
 ```
 
-To integrate DMR or TMR, 3 fields are needed. The "target" field indicates the target location that will be protected. The <component\_name> can be a component name or "None". If "None" is found, the entire <module\_name> will be protected.
+To integrate DMR or TMR, 3 fields are needed. The "target" field indicates the target location that will be protected. The <component\_name> can be a component name or "None". If "None" is found, the entire <module\_name> will be protected. The "feedback\_target" field is used to indicate the ports that need a feedback mechanism. The "feedback" field indicates the feedback mechanism to be used. Currently, there are 3 feedback mechanisms, 0 no feedback mechanism, 1 static feedback mechanism and 2 random feedback mechanism.
+
+TODO Explain FaultTolerantTemporalAnnotation
