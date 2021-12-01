@@ -72,21 +72,21 @@ As a FIRRTL design generated from Yosys may not be fully compatible with the FIR
 ```code5
   {
     "class":"labs.passes.ClockAnnotation",
-    "target":"None.None.clk"
+    "target":"None.None.<clock_name>"
   }
 ```
 
-ClockAnnotation has one field which requires the user to indicate the clock name of the entire design. In this case, the clock name of this design is "clk". LABS converts "clk" to "clock" and makes the signal compatible with FIRRTL internal representation requirements.
+ClockAnnotation has one field which requires the user to indicate the clock name of the entire design. LABS converts <clock\_name> to "clock" and makes the signal compatible with FIRRTL internal representation requirements.
 
 ```code6
   {
     "class":"labs.passes.ResetAnnotation",
-    "target":"None.None.reset_n",
-    "posedge_reset": 0
+    "target":"None.None.<reset_name>",
+    "posedge_reset": <0/1>
   }
 ```
 
-ResetAnnotation has two fields. The "target" field requires the user to indicate the reset name of the entire design. Similar to ClockAnnotation, in this example, LABS converts "reset\_n" to "reset" and makes the signal compatible with FIRRTL internal representation requirements. The "posedge\_reset" field is used to indicate whether the given design uses positive or negetive edge reset. All of the generated modules will have the same reset logic based on this.
+ResetAnnotation has two fields. The "target" field requires the user to indicate the reset name of the entire design. Similar to ClockAnnotation, in this example, LABS converts <reset\_name> to "reset" and makes the signal compatible with FIRRTL internal representation requirements. The "posedge\_reset" field is used to indicate whether the given design uses positive or negetive edge reset. All of the generated modules will have the same reset logic based on this.
 
 ### FaultInjectionAnnotation and ScanChainAnnotation
 These two annotations are from a fault injection framework, [https://github.com/IBM/chiffre](Chiffre), that LABS relies on, which are used to integrate fault controllers and fault injectors. 
@@ -137,7 +137,7 @@ FaultTolerantAnnotation consists of 3 types, FaultTolerantDMRAnnotation, FaultTo
     "class":"labs.passes.FaultTolerant<DMR/TMR>Annotation",
     "target":"<circuit_name>.<module_name>.<component_name>",
     "feedback_target":[<target_port>],
-    "feedback":2
+    "feedback":<0/1/2>
   }
 ```
 
