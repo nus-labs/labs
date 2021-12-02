@@ -33,8 +33,9 @@ case class FaultControllerUDAnnotation(target: List[ComponentName], data_target:
   def update(renames: RenameMap): Seq[Annotation] = Seq(this) // hack
 }
 
-case class FaultControllerProbAnnotation(target: ComponentName, data_target: String, number_of_fires: Int, probability: Int) extends SingleTargetAnnotation[ComponentName] {
-  def duplicate(x: ComponentName): FaultControllerProbAnnotation = this.copy(target = x)
+case class FaultControllerProbAnnotation(target: List[ComponentName], data_target: List[String], number_of_fires: Int, probability: Int) extends Annotation {
+  def duplicate(x: List[ComponentName]): FaultControllerProbAnnotation = this.copy(target = x)
+  def update(renames: RenameMap): Seq[Annotation] = Seq(this) // hack
 }
 
 case class ClockAnnotation(target: ComponentName) extends

@@ -33,9 +33,11 @@ sealed class LfsrInjector(val lfsrWidth: Int, val faultType: String) extends Inj
   val difficulty = RegInit(0.U(lfsrWidth.W))
   val seed = RegInit(1.U(lfsrWidth.W))
 
+  val is_inited = RegInit(0.U(1.W))
   val lfsr = Module(new perfect.random.Lfsr(lfsrWidth))
-  lfsr.io.seed.valid := io.scan.en
+  lfsr.io.seed.valid := Mux(is_inited === 1.U, 0.U, io.scan.en)
   lfsr.io.seed.bits := seed
+  is_inited := Mux(is_inited === 1.U, 1.U, io.scan.en)
 
   val fire = enabled && (lfsr.io.y > difficulty)
 
@@ -70,10 +72,10 @@ class LfsrInjectorN(bitWidth: Int, val lfsrWidth: Int, val scanId: String, val f
   lazy val info = LfsrInjectorInfo(bitWidth, lfsrWidth)
 }
 
-class LfsrInjector16(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 16, scanId, "bit-flip") // scalastyle:ignore
+class LfsrInjector32(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 32, scanId, "bit-flip") // scalastyle:ignore
 
-class LfsrInjector16_bitset(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 16, scanId, "bit-set") // scalastyle:ignore
+class LfsrInjector32_bitset(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 32, scanId, "bit-set") // scalastyle:ignore
 
-class LfsrInjector16_bitreset(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 16, scanId, "bit-reset") // scalastyle:ignore
+class LfsrInjector32_bitreset(bitWidth: Int, scanId: String) extends LfsrInjectorN(bitWidth, 32, scanId, "bit-reset") // scalastyle:ignore
 
 

@@ -45,11 +45,11 @@ class FaultControllerInstrumentation() extends Transform {
 			delays = delays_in
 		}
 		case FaultControllerProbAnnotation(target, dtarget, nfires, prob) =>{
-			input_width = List(find_width(c.modules, target))
-			data_target = List(dtarget)
+			input_width = target.map(find_width(c.modules, _))
+			data_target = dtarget
 			number_of_fires = nfires
 			probability = prob
-			temp = add_stmts(temp, target, input_width(0))
+			temp = add_stmtsUD(temp, target, input_width)
 			probabilistic = true
 		}
 		case FaultInjectionAnnotation(target, id, injector) =>{

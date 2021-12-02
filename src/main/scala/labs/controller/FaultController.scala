@@ -15,7 +15,7 @@ class FaultController(var input_width: List[Int], var datatarget: List[String], 
 
 		val r = scala.util.Random
 
-    def random_config( faulty_width: Int) : String = { // assume Lfsr16
+    def random_config( faulty_width: Int) : String = { // assume Lfsr32
 		val arr = Seq("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
 		val length = faulty_width * 2
 		var out = ""
@@ -23,11 +23,11 @@ class FaultController(var input_width: List[Int], var datatarget: List[String], 
 		
 		for(i <- 0 to length - 1){
 			if(i % 2 == 0){ // difficulty
-				out = "7FFF" + out
+				out = "7FFFFFFF" + out
 			}
 			else{ // seed
 				var seed = ""
-				for(j <- 0 to 3){
+				for(j <- 0 to 7){
 					val randnumber = r.nextInt(16)
 					seed = seed + arr(randnumber)
 				}
@@ -78,13 +78,11 @@ class FaultController(var input_width: List[Int], var datatarget: List[String], 
 		return out	
 	}
 
-	if(affected_bits.length != delays.length) new Exception("affected_bits and delays must have the same length")
-
 	val resetB = if (global_edge_reset.posedge_reset == 0) ~reset.asBool else reset.asBool
 	withReset(resetB){
-	val lfsr_length = 16
+	val lfsr_length = 32
 
-  	val datalength = if(probabilistic) faulty_width * 2 * 16 else if (affected_bits.size != 0) faulty_width else faulty_width * 2 * 16
+  	val datalength = if(probabilistic) faulty_width * 2 * lfsr_length else if (affected_bits.size != 0) faulty_width else faulty_width * 2 * lfsr_length
 	val configuration = if(probabilistic) probabilistic_config(probability).U else if (affected_bits.size != 0) affected_bits.map(choose_bit(_, faulty_width).U) else random_config(faulty_width).U     
 
     // put logics here
@@ -97,7 +95,7 @@ class FaultController(var input_width: List[Int], var datatarget: List[String], 
 	val delay_count = RegInit(0.U(max_delay_width))
 	val delay_idx = RegInit(0.U(delays.length.U.getWidth.W + 1.W))
 	val move_delay_idx = delay_count === delay_vec(delay_idx)
-	delay_idx := Mux(move_delay_idx, delay_idx + 1.U, delay_idx)
+	delay_idx := Mux(move_delay_idx && delay_idx < delays.length.U, delay_idx + 1.U, delay_idx)
 
     val count = RegInit(0.U(datalength.U.getWidth.W)) // used to send configuration information to an injector
 	val check = count =/= datalength.U
@@ -112,26 +110,29 @@ class FaultController(var input_width: List[Int], var datatarget: List[String], 
    	//val fire = (check === false.B) & (io.data_in === datatarget.U) & (delay_check)
 	val fire = (check === false.B) & (result_data_in_check === true.B) & (delay_check)
 
-	count := Mux(move_delay_idx, 0.U,
-				Mux(count === datalength.U, count, count + 1.U))
 	delay_count := Mux(fire, delay_count + 1.U,
 					Mux(move_delay_idx, 0.U, delay_count))
 
-	val number_of_fires = affected_bits.length
+	val number_of_fires = affected_bits.length 
     val count_fires = RegInit(0.U(number_of_fires.U.getWidth.W)) // used to count the number of fires
     count_fires := Mux(count_fires === number_of_fires.U, count_fires, count_fires + move_delay_idx)
 
     val stop_fire = Wire(Bool())
-    stop_fire := Mux(check, 0.U,
-                    Mux(count_fires === number_of_fires.U, 1.U, 0.U))
+	if(!probabilistic && (affected_bits.size != 0))
+    	stop_fire := Mux(check, 0.U,
+        	Mux(count_fires === number_of_fires.U, 1.U, 0.U))
+	else stop_fire := 0.U
 
     if(affected_bits.size == 0 || probabilistic){
+		count := Mux(count === datalength.U, count, count + 1.U)
 		val conf = RegInit(configuration.asInstanceOf[UInt])
 		conf := Mux(check, conf.asInstanceOf[UInt] >> 1.U, conf)
     	scan.out := Mux(fire & !stop_fire, 0.U,
                     Mux(conf.asInstanceOf[UInt](0) , 1.U, 0.U)) 
 	}
 	else{
+		count := Mux(move_delay_idx, 0.U,
+			Mux(count === datalength.U, count, count + 1.U))
 		val conf_temp = for(i <- 0 to affected_bits.length - 1) yield {
 			val reg = RegInit((configuration.asInstanceOf[List[chisel3.UInt]])(i))
 			reg := Mux(check && count_fires === i.U, reg >> 1.U, reg)
