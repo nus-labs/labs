@@ -6,7 +6,7 @@ We propose the Laser Attack Benchmark Suite (LABS) that tries to complete the se
 
 The official website of the Laser Attack Benchmark Suite can be found in this website [https://nus-labs.github.io/](https://nus-labs.github.io/). 
 
-Detailed information can be found in a ICCAD 2020 paper, [https://dl.acm.org/doi/10.1145/3400302.3415646](Laser Attack Benchmark Suite) and the official website.
+Detailed information can be found in a ICCAD 2020 paper, [Laser Attack Benchmark Suite](https://dl.acm.org/doi/10.1145/3400302.3415646) and the official website.
 
 ```code99
 @inproceedings{10.1145/3400302.3415646,
