@@ -1,7 +1,6 @@
 target
 project
 *.fir
-*.v
 *.json
 *.txt
 TargetDirAnnotation(.)
