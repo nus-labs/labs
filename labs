@@ -4,7 +4,7 @@ firrtl_file=''
 configuration_file=''
 target_dir='.'
 output_type='verilog'
-yosys='/home/game11189/yosys/yosys'
+yosys='yosys'
 usage(){
 	printf "Usage:\n[-a] action (inject/protect/yosys)\n[-i] input file\n[-c] configuration file\n[-d] target output directory (default: '.')\n[-x] output type (low/verilog)\n"
 }
