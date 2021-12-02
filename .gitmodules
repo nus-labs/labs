@@ -4,7 +4,7 @@
 [submodule "yosys"]
 	path = yosys
 	url = https://github.com/YosysHQ/yosys
-	branch = yosys-0.10
+	branch = dca8fb54aa625f1600e2ccb16f9763c6abfa798f
 [submodule "src/main/scala/perfect"]
 	path = src/main/scala/perfect
 	url = https://github.com/ibm/perfect-chisel
